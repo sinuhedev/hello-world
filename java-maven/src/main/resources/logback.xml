@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+  <property name="LOG_PATTERN"
+    value="%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n" />
+  <property name="LOG_LEVEL_ROOT" value="${LOG_LEVEL_ROOT:-INFO}" />
+  <property name="LOG_LEVEL_APP" value="${LOG_LEVEL_APP:-DEBUG}" />
+
+  <!-- Consola -->
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>${LOG_PATTERN}</pattern>
+    </encoder>
+  </appender>
+
+  <!-- Loggers específicos -->
+  <logger name="app" level="${LOG_LEVEL_APP}" additivity="false">
+    <appender-ref ref="CONSOLE" />
+  </logger>
+
+  <logger name="org.apache" level="WARN" />
+
+  <!-- Root -->
+  <root level="${LOG_LEVEL_ROOT}">
+    <appender-ref ref="CONSOLE" />
+  </root>
+
+</configuration>
