@@ -1,7 +1,10 @@
 {
   "name": "nodejs",
-  "version": "0.0.1",
   "description": "",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">25"
+  },
   "type": "module",
   "imports": {
     "#utils": "./src/utils/index.js"
@@ -12,8 +15,5 @@
     "test": "_(){ if [ $# -eq 1 ];then node --test --test-name-pattern=$1 ; else node --test  ;fi ;};_",
     "testd": "_(){ node --inspect-brk --test --test-name-pattern=$1 ;};_",
     "coverage": "node --test --experimental-test-coverage"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "^2.4.4"
   }
 }
