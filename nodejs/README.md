@@ -4,6 +4,11 @@
 npm i
 node --run dev
 
+# docker size
+```bash
+docker image ls hello-world/nodejs:latest
+```
+
 # docker
 ```bash
 docker buildx build -t "hello-world/nodejs:latest" .
