@@ -3,13 +3,14 @@
   "description": "",
   "version": "0.0.1",
   "engines": {
-    "node": ">25"
+    "node": ">=25"
   },
   "type": "module",
   "imports": {
     "#utils": "./src/utils/index.js"
   },
   "scripts": {
+    "start": "node src/index.js",
     "dev": "node --inspect --watch src/index.js",
     "clean": "rm -fr node_modules package-lock.json pnpm-lock.yaml .coverage",
     "test": "_(){ if [ $# -eq 1 ];then node --test --test-name-pattern=$1 ; else node --test  ;fi ;};_",

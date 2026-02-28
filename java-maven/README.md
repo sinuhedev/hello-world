@@ -29,7 +29,7 @@ java -jar target/Main-1.0-SNAPSHOT.jar
 # docker
 ```bash
 docker buildx build -t "hello-world/java:latest" .
-docker run  --env-file .env -it hello-world/java:latest
+docker run --env-file .env -p 3000:3000 -it hello-world/java:latest
 ```
 
 
