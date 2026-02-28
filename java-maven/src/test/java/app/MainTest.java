@@ -8,10 +8,10 @@ import lombok.extern.slf4j.Slf4j;
 public class MainTest {
 
     @Test
-    public void myTest() {
+    public void myTest() throws Exception {
         var m = new Main();
         assertNotNull(m);
-        Main.main(new String[]{});
+        Main.main(new String[] {});
     }
 
     @Test
@@ -20,4 +20,3 @@ public class MainTest {
     }
 
 }
-    
