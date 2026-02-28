@@ -2,7 +2,7 @@ import test from 'node:test'
 
 test('env', () => {
   process.loadEnvFile()
-  const { MESSAGE } = process.env
+  const { PORT } = process.env
 
-  console.info(MESSAGE)
+  console.info(PORT)
 })
