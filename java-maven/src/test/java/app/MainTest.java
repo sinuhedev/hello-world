@@ -15,7 +15,7 @@ public class MainTest {
     }
 
     @Test
-    public void utest() {
+    public void test() {
         log.info("Hello World 🚀");
     }
 

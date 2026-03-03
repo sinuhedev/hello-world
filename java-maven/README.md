@@ -11,7 +11,7 @@ mvn -DskipTests clean install
 ```bash
 mvn test
 mvn test -Dtest=app.MainTest
-mvn test -Dtest="app.MainTest#utest"
+mvn test -Dtest="app.MainTest#test"
 ```
 
 # exec
