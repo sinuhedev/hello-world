@@ -32,6 +32,8 @@ public class Main {
       try (var os = exchange.getResponseBody()) {
         os.write(response.getBytes(StandardCharsets.UTF_8));
       }
+
+      log.info("response: " + response);
     });
 
     server.start();

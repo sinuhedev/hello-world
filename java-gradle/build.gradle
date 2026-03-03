@@ -19,7 +19,7 @@ application {
 jar {
     manifest {
         attributes(
-            'Main-Class': 'app.Main'
+            'Main-Class': application.mainClass
         )
     }
 }
@@ -28,22 +28,29 @@ repositories {
     mavenCentral()
 }
 
+ext {
+    dotenvVersion = '3.2.0'
+    lombokVersion = '1.18.42'
+    slf4jVersion = '2.0.17'
+    junitVersion = '6.0.3'
+}
+
 dependencies {
     // dotenv
-    implementation 'io.github.cdimascio:dotenv-java:3.2.0'
+    implementation "io.github.cdimascio:dotenv-java:${dotenvVersion}"
 
     // SLF4J
-    implementation 'org.slf4j:slf4j-api:2.0.17'
-    runtimeOnly 'org.slf4j:slf4j-simple:2.0.17'
+    implementation "org.slf4j:slf4j-api:${slf4jVersion}"
+    runtimeOnly "org.slf4j:slf4j-simple:${slf4jVersion}"
 
     // Lombok
-    compileOnly 'org.projectlombok:lombok:1.18.42'
-    annotationProcessor 'org.projectlombok:lombok:1.18.42'
-    testCompileOnly 'org.projectlombok:lombok:1.18.42'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.42'
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
+    testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
     // JUnit
-    testImplementation platform('org.junit:junit-bom:6.0.3')
+    testImplementation platform("org.junit:junit-bom:${junitVersion}")
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
