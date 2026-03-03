@@ -12,15 +12,16 @@ gradle run
 # release
 
 ```bash
-java -jar build/libs/java-gradle--1.0-SNAPSHOT.jar
+java -jar build/libs/java-gradle-1.0-SNAPSHOT.jar
 ```
 
 # test
 
 ```bash
 gradle test
+gradle test --rerun-tasks
 gradle test --tests "app.MainTest"
-gradle test --tests "app.Java8Test.lambda8"
+gradle test --tests "app.MainTest.test"
 ```
 
 # jacoco sonar

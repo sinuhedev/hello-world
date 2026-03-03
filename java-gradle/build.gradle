@@ -3,8 +3,8 @@ plugins {
     id 'application'
 }
 
-group 'app'
-version '1.0-SNAPSHOT'
+group = 'app'
+version = '1.0-SNAPSHOT'
 
 java {
     toolchain {
@@ -29,11 +29,17 @@ repositories {
 }
 
 dependencies {
-  testImplementation platform('org.junit:junit-bom:5.10.2')
+  testImplementation platform('org.junit:junit-bom:6.0.3')
   testImplementation 'org.junit.jupiter:junit-jupiter'
   testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 test {
     useJUnitPlatform()
+
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat = "full"
+        showStandardStreams = true
+    }
 }
