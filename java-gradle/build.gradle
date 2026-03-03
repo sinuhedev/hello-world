@@ -6,14 +6,14 @@ plugins {
 group = 'app'
 version = '1.0-SNAPSHOT'
 
+application {
+    mainClass = 'app.Main'
+}
+
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
     }
-}
-
-application {
-    mainClass = 'app.Main'
 }
 
 jar {
