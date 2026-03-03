@@ -2,8 +2,8 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug",
       "type": "go",
+      "name": "Debug",
       "request": "launch",
       "mode": "auto",
       "program": "${workspaceFolder}"
