@@ -2,13 +2,12 @@ FROM gradle:9.3.1-jdk21-alpine AS build
 
 WORKDIR /app
 
-COPY build.gradle .
-COPY settings.gradle .
-COPY src/ src/
+COPY build.gradle settings.gradle ./
+COPY src ./src
 
 RUN gradle build -x test
 
-FROM eclipse-temurin:21-jre-alpine AS runtime
+FROM eclipse-temurin:21-jre-alpine
 
 WORKDIR /app
 
