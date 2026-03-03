@@ -2,22 +2,21 @@ package app;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.Test;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class MainTest {
 
   @Test
-  void test() {
-    System.out.println("hola");
-    System.out.println("hooooo");
+  public void myTest() throws Exception {
+    var m = new Main();
+    assertNotNull(m);
+    Main.main(new String[] {});
   }
 
   @Test
-  public void myTest() {
-    var m = new Main();
-    assertNotNull(m);
-
-    Main.main(new String[] {});
-
+  public void test() {
+    log.info("Hello World 🚀");
   }
 
 }
