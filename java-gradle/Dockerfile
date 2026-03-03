@@ -1,6 +1,17 @@
-FROM openjdk:21-jdk-alpine
-LABEL author="sinuhe.dev@gmail.com"
+FROM gradle:9.3.1-jdk21-alpine AS build
 
-COPY build/libs/java-gradle-1.0-SNAPSHOT.jar /home
+WORKDIR /app
 
-CMD java -jar /home/java-gradle-1.0-SNAPSHOT.jar
+COPY build.gradle .
+COPY settings.gradle .
+COPY src/ src/
+
+RUN gradle build -x test
+
+FROM eclipse-temurin:21-jre-alpine AS runtime
+
+WORKDIR /app
+
+COPY --from=build /app/build/libs/*.jar app.jar
+
+ENTRYPOINT ["java","-jar", "app.jar"]
