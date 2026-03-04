@@ -6,7 +6,9 @@
       "name": "Debug",
       "request": "launch",
       "mode": "auto",
-      "program": "${workspaceFolder}/cmd/server"
+      "cwd": "${workspaceFolder}",
+      "program": "${workspaceFolder}/cmd/server",
+      "envFile": "${workspaceFolder}/.env",
     }
   ]
 }

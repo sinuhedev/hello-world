@@ -1,7 +1,7 @@
 # go
 
 ```sh
-go run ./cmd/server
+go run cmd/server
 
 go test ./...
 
