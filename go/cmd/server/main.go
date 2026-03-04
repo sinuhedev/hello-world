@@ -5,18 +5,11 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/joho/godotenv"
-
 	"hello-world-go/internal/handler"
 	"hello-world-go/internal/util"
 )
 
 func main() {
-
-	err1 := godotenv.Load()
-	if err1 != nil {
-		log.Fatal("Error cargando .env")
-	}
 
 	port := os.Getenv("PORT")
 
