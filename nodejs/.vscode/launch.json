@@ -2,8 +2,8 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "nodejs:attach",
 			"type": "node",
+			"name": "Debug",
 			"request": "attach"
 		}
 	]
