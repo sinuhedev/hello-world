@@ -5,10 +5,10 @@
       "name": "Debug",
       "type": "lldb",
       "request": "launch",
+      "cwd": "${workspaceFolder}",
       "cargo": {
         "args": [
-          "run",
-          "--bin=hello-world-rust"
+          "build"
         ]
       },
     },
@@ -16,12 +16,13 @@
       "name": "Debug Test",
       "type": "lldb",
       "request": "launch",
+      "cwd": "${workspaceFolder}",
       "cargo": {
         "args": [
           "test",
-          "--bin=hello-world-rust"
+          "--no-run"
         ]
-      }
+      },
     }
   ]
 }
