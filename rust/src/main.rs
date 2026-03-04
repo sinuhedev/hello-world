@@ -1,19 +1,45 @@
-// use hello_world_rust::greet;
-// use dotenv::dotenv;
-use std::env;
+use hello_world_rust::greet; // Ahora esto no dará error
+use std::{
+    env,
+    io::{prelude::*, BufReader},
+    net::{TcpListener, TcpStream},
+};
 
 fn main() {
-    // dotenv().ok();
-    // let port = env::var("PORT").unwrap();
+    let port = env::var("PORT").unwrap_or_else(|_| "8080".to_string());
+    let addr = format!("127.0.0.1:{}", port);
 
-    // println!("Hello World!");
-    // println!("{}", greet("world"));
-    // println!("{}", port)
+    let listener = TcpListener::bind(&addr).unwrap();
+    println!("🚀 Servidor iniciado en http://{}", addr);
 
-    let cli_arg = env::var("PORT");
-
-    match cli_arg {
-        Ok(val) => println!("PORT: {:?}", val),
-        Err(e) => println!("Error PORT: {}", e),
+    for stream in listener.incoming() {
+        let stream = stream.unwrap();
+        handle_connection(stream);
     }
+}
+
+fn handle_connection(mut stream: TcpStream) {
+    let buf_reader = BufReader::new(&mut stream);
+
+    // Usamos match para evitar panics si la petición está vacía
+    let request_line = match buf_reader.lines().next() {
+        Some(Ok(line)) => line,
+        _ => return,
+    };
+
+    let ss = greet("World");
+
+    // Convertimos ambos a String para que el compilador esté feliz
+    let (status_line, contents) = if request_line == "GET / HTTP/1.1" {
+        ("HTTP/1.1 200 OK", ss)
+    } else {
+        ("HTTP/1.1 404 NOT FOUND", "Página no encontrada".to_string())
+    };
+
+    let response = format!(
+        "{status_line}\r\nContent-Length: {}\r\n\r\n{contents}",
+        contents.len()
+    );
+
+    stream.write_all(response.as_bytes()).unwrap();
 }
