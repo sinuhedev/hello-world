@@ -6,9 +6,11 @@
       "type": "lldb",
       "request": "launch",
       "cwd": "${workspaceFolder}",
+      "envFile": "${workspaceFolder}/.env",
       "cargo": {
         "args": [
-          "build"
+          "build",
+          "--bin=hello_world_rust"
         ]
       },
     },
@@ -17,6 +19,7 @@
       "type": "lldb",
       "request": "launch",
       "cwd": "${workspaceFolder}",
+      "envFile": "${workspaceFolder}/.env",
       "cargo": {
         "args": [
           "test",
