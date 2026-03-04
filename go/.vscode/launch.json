@@ -6,7 +6,7 @@
       "name": "Debug",
       "request": "launch",
       "mode": "auto",
-      "program": "${workspaceFolder}"
+      "program": "${workspaceFolder}/cmd/server"
     }
   ]
 }
