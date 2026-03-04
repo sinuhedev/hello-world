@@ -4,6 +4,16 @@
 		{
 			"type": "node",
 			"name": "Debug",
+			"request": "launch",
+			"program": "${workspaceFolder}/src/index.js",
+			"runtimeArgs": [
+				"--watch",
+				"--env-file=.env"
+			],
+		},
+		{
+			"type": "node",
+			"name": "Debug:attach",
 			"request": "attach"
 		}
 	]
