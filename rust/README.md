@@ -25,5 +25,6 @@ docker run -it --entrypoint sh "hello-world/rust:latest"
 # build
 docker build -t "hello-world/rust:latest" .
 # run
-docker run --env-file .env -p 3000:3000 -it hello-world/rust:latest
+# --init garantiza que las señales lleguen correctamente al proceso 
+docker run --env-file .env -p 3000:3000 -it --init hello-world/rust:latest
 ```

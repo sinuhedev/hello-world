@@ -1,4 +1,4 @@
-use hello_world_rust::greet; // Ahora esto no dará error
+use hello_world_rust::greet;
 use std::{
     env,
     io::{prelude::*, BufReader},
