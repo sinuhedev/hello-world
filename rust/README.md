@@ -2,7 +2,11 @@
 
 # run
 ```sh
+# .env
+export $(grep -v '^#' .env | xargs)
+
 cargo run
+cargo test
 ```
 
 # build

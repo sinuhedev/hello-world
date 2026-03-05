@@ -10,7 +10,7 @@ fn main() {
     let addr = format!("0.0.0.0:{}", port);
 
     let listener = TcpListener::bind(&addr).unwrap();
-    println!("🚀 Servidor iniciado en http://{}", addr);
+    println!("Listening on localhost:{}", addr);
 
     for stream in listener.incoming() {
         let stream = stream.unwrap();
