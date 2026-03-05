@@ -3,7 +3,7 @@
 #include "util/fun.h"
 
 int main() {
-  char* str = "Hola Mundo";
+  char* str = "Hello World!";
   printf("%s\n", str);
   hola();
   return 0;
