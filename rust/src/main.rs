@@ -1,9 +1,10 @@
-use hello_world_rust::greet;
 use std::{
     env,
     io::{prelude::*, BufReader},
     net::{TcpListener, TcpStream},
 };
+
+use hello_world_rust::greet;
 
 fn main() {
     let port = env::var("PORT").unwrap_or_else(|_| "8080".to_string());
@@ -13,27 +14,22 @@ fn main() {
     println!("Listening on localhost:{}", addr);
 
     for stream in listener.incoming() {
-        let stream = stream.unwrap();
-        handle_connection(stream);
+        handle_connection(stream.unwrap());
     }
 }
 
 fn handle_connection(mut stream: TcpStream) {
     let buf_reader = BufReader::new(&mut stream);
 
-    // Usamos match para evitar panics si la petición está vacía
     let request_line = match buf_reader.lines().next() {
         Some(Ok(line)) => line,
         _ => return,
     };
 
-    let ss = greet("World");
-
-    // Convertimos ambos a String para que el compilador esté feliz
     let (status_line, contents) = if request_line == "GET / HTTP/1.1" {
-        ("HTTP/1.1 200 OK", ss)
+        ("HTTP/1.1 200 OK", greet("World"))
     } else {
-        ("HTTP/1.1 404 NOT FOUND", "Página no encontrada".to_string())
+        ("HTTP/1.1 404 NOT FOUND", "NOT FOUND".to_string())
     };
 
     let response = format!(
