@@ -1,0 +1,6 @@
+[project]
+name = "hello-world-python"
+version = "0.1.0"
+description = "Un simple proyecto Hola Mundo en Python"
+requires-python = ">=3.8"
+dependencies = ["requests>=2.31.0"]
