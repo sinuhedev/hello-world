@@ -5,10 +5,9 @@
       "name": "Debug",
       "type": "cppdbg",
       "request": "launch",
-      "miDebuggerPath": "/usr/bin/gdb",
-      "MIMode": "gdb",
       "cwd": "${workspaceFolder}",
       "program": "${workspaceFolder}/target/hello_world_gcc",
+      "preLaunchTask": "make"
     }
   ]
 }
