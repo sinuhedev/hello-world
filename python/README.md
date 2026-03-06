@@ -1,10 +1,15 @@
 # python
 
-# install
-pip install .
+# python 
+uv python list 
+uv run python --version
+
+# add
+uv add request 
 
 # run
-python src/main.py
+uv sync
+uv run python src/main.py
 
 # docker
 ```sh

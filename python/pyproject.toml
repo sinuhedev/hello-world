@@ -1,6 +1,6 @@
 [project]
-name = "hello-world-python"
+name = "python-uv"
 version = "0.1.0"
-description = "hello world"
-requires-python = ">=3.13"
-dependencies = ["python-dotenv>=1.2.2"]
+description = "python-uv"
+requires-python = ">=3.14.3"
+dependencies = ["requests>=2.32.5", "python-dotenv>=1.2.2"]
