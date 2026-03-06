@@ -5,7 +5,9 @@
       "name": "Debug",
       "type": "debugpy",
       "request": "launch",
-      "program": "main.py",
+      "cwd": "${workspaceFolder}",
+      "program": "src/main.py",
+      "envFile": "${workspaceFolder}/.env",
     }
   ]
 }

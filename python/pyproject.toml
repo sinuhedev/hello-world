@@ -3,4 +3,4 @@ name = "hello-world-python"
 version = "0.1.0"
 description = "hello world"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = ["python-dotenv>=1.2.2"]
