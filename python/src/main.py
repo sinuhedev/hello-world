@@ -19,4 +19,10 @@ class HelloHandler(BaseHTTPRequestHandler):
 if __name__ == "__main__":
     server = HTTPServer(("0.0.0.0", PORT), HelloHandler)
     print(f"Servidor corriendo en http://localhost:{PORT}")
-    server.serve_forever()
+
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        print("\nServidor detenido.")
+    finally:
+        server.server_close()
