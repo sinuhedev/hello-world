@@ -11,8 +11,7 @@ static void activate(GtkApplication *app, gpointer user_data) {
   char filepath[1024];
   snprintf(filepath, sizeof(filepath), "%s/usr/share/icons", appdir);
 
-  GtkIconTheme *icon_theme =
-      gtk_icon_theme_get_for_display(gtk_widget_get_display(window));
+  GtkIconTheme *icon_theme = gtk_icon_theme_get_for_display(gtk_widget_get_display(window));
   gtk_icon_theme_add_search_path(icon_theme, filepath);
 
   gtk_window_set_icon_name(GTK_WINDOW(window), "app");
