@@ -1,0 +1,13 @@
+# gtk4-,ake
+
+# build
+
+make
+
+# run
+
+make run
+
+# clean
+
+make clean
