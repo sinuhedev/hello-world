@@ -1,0 +1,22 @@
+{
+  "name": "bun-web",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "export NODE_ENV=dev && bun --env-file=.env.dev ./bun.config.js dev",
+    "build:dev": "export NODE_ENV=dev && bun --env-file=.env.dev ./bun.config.js build",
+    "build:prod": "export NODE_ENV=prod && bun --env-file=.env.prod ./bun.config.js build",
+    "format": "biome format",
+    "lint": "biome lint src",
+    "check": "biome check --reporter=summary src",
+    "test": "_(){ if [ $# -eq 1 ];then bun test --test-name-pattern=$1 ; else bun test  ;fi ;};_",
+    "test:coverage": "bun test --coverage",
+    "clean": "rm -rf node_modules out bun.lock"
+  },
+  "devDependencies": {},
+  "dependencies": {
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3"
+  }
+}

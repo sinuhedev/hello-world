@@ -1,0 +1,22 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "bun",
+      "name": "Debug",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/index.js",
+      "runtimeArgs": [
+        "--watch",
+        "--env-file=.env"
+      ],
+    },
+    {
+      "type": "bun",
+      "name": "Debug:attach",
+      "request": "attach",
+      "url": "ws://localhost:6499/",
+      "stopOnEntry": false
+    }
+  ]
+}

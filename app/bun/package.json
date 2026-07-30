@@ -1,0 +1,15 @@
+{
+  "name": "bun",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun run --inspect --watch src/index.js",
+    "build": "bun build src/index.js --compile --outfile out/server",
+    "clean": "rm -rf node_modules out bun.lock",
+    "test": "_(){ if [ $# -eq 1 ];then bun test --test-name-pattern=$1 ; else bun test  ;fi ;};_",
+    "test:coverage": "bun test --coverage"
+  },
+  "devDependencies": {},
+  "dependencies": {}
+}

@@ -1,0 +1,31 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug",
+      "type": "lldb",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "envFile": "${workspaceFolder}/.env",
+      "cargo": {
+        "args": [
+          "build",
+          "--bin=hello_world_rust"
+        ]
+      },
+    },
+    {
+      "name": "Debug Test",
+      "type": "lldb",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "envFile": "${workspaceFolder}/.env",
+      "cargo": {
+        "args": [
+          "test",
+          "--no-run"
+        ]
+      },
+    }
+  ]
+}
