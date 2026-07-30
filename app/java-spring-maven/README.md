@@ -6,6 +6,7 @@
 mvn clean
 mvn install
 mvn clean install -DskipTests
+mvn spring-boot:run
 ```
 
 # release

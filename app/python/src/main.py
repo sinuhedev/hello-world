@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv()
-PORT = int(os.getenv("PORT", 8080))
+PORT = int(os.getenv("PORT", 3000))
 
 
 class HelloHandler(BaseHTTPRequestHandler):
