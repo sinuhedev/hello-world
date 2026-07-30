@@ -1,0 +1,11 @@
+services:
+  sonarqube:
+    image: sonarqube:26.3.0.120487-community
+    volumes:
+      - ./.docker/data:/opt/SonarQube/data
+      - ./.docker/extensions:/opt/SonarQube/extensions
+    ports:
+      - 9000:9000
+      - 9092:9092
+    environment:
+      SONAR_TELEMETRY_ENABLE: false

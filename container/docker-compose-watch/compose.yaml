@@ -1,0 +1,34 @@
+services:
+  api:
+    build:
+      context: ./api
+    develop:
+      watch:
+        - action: sync
+          path: ./api/src
+          target: /usr/src/app/src
+        - action: rebuild
+          path: ./api/package.json
+    environment:
+      NODE_ENV: production
+    ports:
+      - 4000:4000
+
+  web:
+    build:
+      context: ./web
+    develop:
+      watch:
+        - action: rebuild
+          path: ./web
+          ignore:
+            - node_modules/
+    ports:
+      - 3000:80
+
+  mongo:
+    image: mongo
+    volumes:
+      - ./.docker/mongodb:/data/db
+    ports:
+      - 27018:27017

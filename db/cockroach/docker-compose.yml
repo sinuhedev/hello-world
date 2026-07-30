@@ -1,0 +1,10 @@
+version: '3.9'
+
+services:
+  cockroach:
+    image: cockroachdb/cockroach:v23.2.7
+    volumes:
+    - ./.docker/data:/cockroach/cockroach-data
+    ports:
+     - 26257:26257
+    command: start-single-node --insecure --max-sql-memory=20GB

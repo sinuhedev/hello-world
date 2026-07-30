@@ -1,0 +1,12 @@
+version: '3.9'
+
+services:
+  redis:
+    image: redis/redis-stack-server:latest
+    volumes:
+      - ./.docker/data:/data
+      - ./.docker/redis-stack.conf:/redis-stack.conf
+    ports:
+      - 6379:6379
+    environment:
+      - REDIS_ARGS=--requirepass password
