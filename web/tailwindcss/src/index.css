@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: Oswald;
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  src: url("./fonts/Oswald/Oswald-VariableFont_wght.ttf");
+}
+
+@layer theme, base, components, utilities;
+
+@theme {
+  --font-sans: "Oswald";
+  --primary: #0084b2;
+  --secondary: #353a42;
+  --body-bg: #242932;
+  --body-color: #a8a8a8;
+  --spacing: 1px;
+}
+
+@layer base {
+  body {
+    background-color: var(--body-bg);
+    color: var(--body-color);
+  }
+}

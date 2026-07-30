@@ -1,0 +1,12 @@
+:root {
+  --primary: #0084b2;
+  --secondary: #353a42;
+  --body-bg: #242932;
+  --body-color: #a8a8a8;
+  --spacing: 1px;
+}
+
+body {
+  background-color: var(--body-bg);
+  color: var(--body-color);
+}
