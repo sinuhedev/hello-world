@@ -4,6 +4,18 @@
 	"private": true,
 	"type": "module",
 	"main": "src/electron/index.js",
+	"build": {
+		"electronLanguages": "en-US",
+		"directories": {
+			"output": "out"
+		},
+		"files": [
+			"src"
+		],
+		"linux": {
+			"target": "AppImage"
+		}
+	},
 	"scripts": {
 		"dev": "export DEV=true && electron --inspect .",
 		"build": "electron-builder"
