@@ -23,7 +23,7 @@
     ]
   },
   "scripts": {
-    "dev": "vite --mode localhost & export DEV=true && electron --inspect . ",
+    "dev": "trap 'kill 0' EXIT; vite & DEV=true electron --inspect .",
     "build": "vite build && electron-builder"
   },
   "devDependencies": {
