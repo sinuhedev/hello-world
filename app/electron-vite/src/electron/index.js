@@ -15,7 +15,7 @@ app.whenReady().then(() => {
     height: 800,
 
     webPreferences: {
-      devTools: DEV,
+      devTools: true,
       preload: app.getAppPath() + '/src/electron/ipc/preload.js',
       nodeIntegration: true
     }
@@ -29,9 +29,12 @@ app.whenReady().then(() => {
 
   ipc(ipcMain, app, win)
 
-  win.loadFile('src/web/index.html')
-
-  if (DEV) win.openDevTools()
+  if (DEV) {
+    win.loadURL('http://localhost:3000')
+    win.openDevTools()
+  } else {
+    win.loadFile('src/web/index.html')
+  }
 })
 
 app.on('window-all-closed', () => app.quit())

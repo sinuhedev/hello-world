@@ -1,5 +1,5 @@
 {
-  "name": "electron",
+  "name": "electron-vite",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -14,15 +14,21 @@
     },
     "asar": true,
     "files": [
-      "src"
+      {
+        "from": "out/web",
+        "to": "src/web"
+      },
+      "src/electron",
+      "package.json"
     ]
   },
   "scripts": {
-    "dev": "export DEV=true && electron --inspect .",
-    "build": "electron-builder"
+    "dev": "vite --mode localhost & export DEV=true && electron --inspect . ",
+    "build": "vite build && electron-builder"
   },
   "devDependencies": {
     "electron": "43.2.0",
-    "electron-builder": "26.15.3"
+    "electron-builder": "26.15.3",
+    "vite": "8.0.16"
   }
 }
