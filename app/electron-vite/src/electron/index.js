@@ -15,7 +15,7 @@ app.whenReady().then(() => {
     height: 800,
 
     webPreferences: {
-      devTools: true,
+      devTools: DEV,
       preload: app.getAppPath() + '/src/electron/ipc/preload.js',
       nodeIntegration: true
     }

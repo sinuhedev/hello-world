@@ -29,9 +29,8 @@ app.whenReady().then(() => {
 
   ipc(ipcMain, app, win)
 
-  win.loadFile('src/web/index.html')
-
   if (DEV) win.openDevTools()
+  win.loadFile('src/web/index.html')
 })
 
 app.on('window-all-closed', () => app.quit())
