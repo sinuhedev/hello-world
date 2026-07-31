@@ -1,0 +1,10 @@
+electronLanguages: en-US
+
+directories:
+  output: out
+
+files:
+  - src
+
+linux:
+  target: AppImage

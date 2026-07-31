@@ -1,0 +1,15 @@
+{
+	"name": "electron",
+	"version": "1.0.0",
+	"private": true,
+	"type": "module",
+	"main": "src/electron/index.js",
+	"scripts": {
+		"dev": "export DEV=true && electron --inspect .",
+		"build": "electron-builder"
+	},
+	"devDependencies": {
+		"electron": "43.2.0",
+		"electron-builder": "26.15.3"
+	}
+}
