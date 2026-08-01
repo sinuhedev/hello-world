@@ -53,3 +53,20 @@
     font-size: var(--text-lg);
   }
 }
+
+@media (max-width: 1024px) {
+  .mq {
+    background-color: red;
+  }
+}
+
+.cr-name {
+  container-name: my-container;
+  container-type: inline-size;
+}
+
+@container my-container (max-width: 1024px) {
+  * {
+    background-color: red;
+  }
+}
