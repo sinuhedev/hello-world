@@ -17,11 +17,39 @@
   --body-bg: #242932;
   --body-color: #a8a8a8;
   --spacing: 1px;
+  --breakpoint-md: 768px; /* 48rem */
+  --breakpoint-lg: 1024px; /* 64rem; */
+  --breakpoint-xl: 1280px; /* 80rem; */
 }
 
 @layer base {
   body {
     background-color: var(--body-bg);
     color: var(--body-color);
+  }
+
+  h1 {
+    font-size: var(--text-3xl);
+  }
+
+  h2 {
+    font-size: var(--text-2xl);
+  }
+
+  h3 {
+    font-size: var(--text-xl);
+  }
+
+  h4 {
+    font-size: var(--text-lg);
+  }
+
+  h5 {
+    font-size: var(--text-lg);
+    color: var(--muted-color);
+  }
+
+  h6 {
+    font-size: var(--text-lg);
   }
 }
