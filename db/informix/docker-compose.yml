@@ -1,0 +1,17 @@
+services:
+  informix:
+    image: icr.io/informix/informix-developer-database:14.10.FC9W1DE
+    container_name: informix
+    hostname: informix
+    privileged: true
+    environment:
+      - LICENSE=accept
+    ports:
+      - "9088:9088"
+      - "9089:9089"
+    volumes:
+      - informix_data:/opt/ibm/data
+    restart: unless-stopped
+
+volumes:
+  informix_data:
