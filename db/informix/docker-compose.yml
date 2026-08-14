@@ -10,5 +10,5 @@ services:
       - "9088:9088"
     volumes:
       - ./.docker/informix:/opt/ibm/data
-      - ./informix-init:/opt/ibm/config
+      - ./config:/opt/ibm/config
       - ./src:/home/informix/src
