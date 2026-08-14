@@ -7,9 +7,15 @@ User: informix
 Password: in4mix
 ```
 
-```sh
 # permission
+```sh
 chmod -R 777 ./informix-init
-# run files
-./dbaccess src/run.sql
 ```
+
+# run files
+```sh
+./dbaccess src/users.sql
+./dbaccess src/load-users.sql
+```
+
+load from src/users.csv insert into users;
