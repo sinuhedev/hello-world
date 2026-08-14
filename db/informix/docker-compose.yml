@@ -6,12 +6,11 @@ services:
     privileged: true
     environment:
       - LICENSE=accept
+      - STORAGE=local
+      - INIT_FILE=init.sql
     ports:
       - "9088:9088"
-      - "9089:9089"
     volumes:
-      - informix_data:/opt/ibm/data
-    restart: unless-stopped
-
-volumes:
-  informix_data:
+      - ./.docker/informix:/opt/ibm/data
+      - ./informix-init:/opt/ibm/config
+      - ./src:/home/informix/src
