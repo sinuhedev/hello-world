@@ -2,8 +2,6 @@ services:
   informix:
     image: icr.io/informix/informix-developer-database:14.10.FC9W1DE
     container_name: informix
-    hostname: informix
-    privileged: true
     environment:
       - LICENSE=accept
       - STORAGE=local
