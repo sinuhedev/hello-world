@@ -14,8 +14,8 @@ chmod -R 777 ./informix-init
 
 # run files
 ```sh
-./dbaccess src/users.sql
-./dbaccess src/load-users.sql
+./dbaccess src/user-load.sql
+./dbaccess src/user-table.sql
 ```
 
 load from src/users.csv insert into users;
