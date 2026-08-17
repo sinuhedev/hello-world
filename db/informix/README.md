@@ -10,6 +10,7 @@ Password: in4mix
 # permission
 ```sh
 chmod -R 777 ./informix-init
+sudo chmod -R 777 .docker/out
 ```
 
 # run files
@@ -18,4 +19,7 @@ chmod -R 777 ./informix-init
 ./dbaccess src/user-table.sql
 ```
 
-load from src/users.csv insert into users;
+# bash
+```
+docker exec -it informix bash 
+```
