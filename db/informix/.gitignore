@@ -1,2 +1,4 @@
 .docker
 config/wl_credentials_status_file
+.dbeaver
+.project
