@@ -1,0 +1,152 @@
+#!/bin/bash
+
+#
+# ============ group ============ #
+#
+
+# CHAT
+# DOMAIN
+# 
+# CLOUDFLARE_EMAIL
+# CLOUDFLARE_GLOBAL_API_KEY
+# CLOUDFLARE_ZONE_ID
+# 
+# AWS_DEFAULT_REGION
+# 
+# DEVELOPMENT__AWS_ACCESS_KEY_ID
+# DEVELOPMENT__AWS_SECRET_ACCESS_KEY
+# 
+# PRODUCTION__AWS_ACCESS_KEY_ID
+# PRODUCTION__AWS_SECRET_ACCESS_KEY
+# 
+# AWS_CLOUDFRONT_DEV_WEB
+# AWS_CLOUDFRONT_PROD_WEB
+# 
+# AWS_S3_DEVELOPMENT
+# AWS_S3_PRODUCTION
+
+# 
+# ============ project ============ #
+# 
+
+# WEB_NAME
+# 
+# ENV_PROD
+# ENV_BETA
+# ENV_DEV
+# 
+
+# 
+# ./deploy <env>
+# 
+
+ENV=$1
+ENV_NAME=`echo $ENV | tr '[:lower:]' '[:upper:]'`
+
+if [[ -z "$ENV" ]]; then
+  echo "deploy <env>"
+  exit 1
+fi
+
+#
+#  .env.<env>
+#
+
+if [ $GITLAB_CI ]; then
+  # is gitlab
+  ENV_FILE="ENV_${ENV_NAME}"
+  mv ${!ENV_FILE} .env.${ENV}
+else
+  # is Local
+  GITLAB_CI=false
+  source deploy-variables
+fi
+
+#
+# AWS
+#
+
+export AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION
+
+if [[ $ENV == "prod" ]]; then
+  export AWS_ACCESS_KEY_ID=$PRODUCTION__AWS_ACCESS_KEY_ID
+  export AWS_SECRET_ACCESS_KEY=$PRODUCTION__AWS_SECRET_ACCESS_KEY
+else
+  export AWS_ACCESS_KEY_ID=$DEVELOPMENT__AWS_ACCESS_KEY_ID
+  export AWS_SECRET_ACCESS_KEY=$DEVELOPMENT__AWS_SECRET_ACCESS_KEY
+fi
+
+#
+# WEB
+#
+
+if [[ $ENV == "prod" ]]; then
+  SUBDOMAIN=""
+  AWS_S3_WEB=$AWS_S3_PRODUCTION
+else
+  SUBDOMAIN=$ENV.
+  AWS_S3_WEB=$AWS_S3_DEVELOPMENT
+fi
+
+if [[ $WEB_NAME == "/" ]]; then
+  WEB=$SUBDOMAIN$DOMAIN
+else
+  WEB=$SUBDOMAIN$DOMAIN$WEB_NAME
+fi
+
+echo ""
+echo "=================== deploy ==================="
+echo ""
+
+echo "GITLAB_CI : $GITLAB_CI"
+echo "ENV : $ENV_NAME"
+echo "WEB : $WEB"
+
+echo ""
+echo "=================== node ==================="
+echo ""
+
+node --run build -- $ENV
+
+echo ""
+echo "===================  AWS S3 ==================="
+echo ""
+
+if [[ $WEB_NAME == "/" ]]; then
+  echo "AWS S3 rm $WEB/assets"
+  aws s3 rm --recursive s3://$AWS_S3_WEB/$WEB/assets --only-show-errors
+else
+  echo "AWS S3 rm $WEB"
+  aws s3 rm --recursive s3://$AWS_S3_WEB/$WEB --only-show-errors
+fi
+
+echo "AWS S3 sync $WEB"
+aws s3 sync out s3://$AWS_S3_WEB/$WEB --only-show-errors
+
+echo ""
+echo "=================== AWS Cloudfront ==================="
+echo ""
+
+AWS_CLOUDFRONT_ID="AWS_CLOUDFRONT_${ENV_NAME}_WEB"
+aws cloudfront create-invalidation --paths "/*" --distribution-id ${!AWS_CLOUDFRONT_ID} --output text
+
+echo ""
+echo "=================== Cloudflare ==================="
+echo ""
+
+curl -X DELETE "https://api.cloudflare.com/client/v4/zones/$CLOUDFLARE_ZONE_ID/purge_cache" \
+     -H "X-Auth-Email: $CLOUDFLARE_EMAIL" -H "X-Auth-Key: $CLOUDFLARE_GLOBAL_API_KEY" \
+     -H "Content-Type: application/json" \
+     -d '{ "files" : [ "https://'$WEB'/assets/***" , "https://'$WEB'/*" ] }' \
+     -o /dev/null -s -w "%{http_code}\n"
+
+echo ""
+echo "=================== CHAT ==================="
+echo ""
+
+curl  -X POST https://discord.com/api/webhooks/$CHAT \
+      -H 'Content-type: application/json' \
+      -d '{"username": "gitlab" , "content": "'" https://$WEB "'" }' \
+      -o /dev/null -s -w "%{http_code}\n"
+
+echo ""
