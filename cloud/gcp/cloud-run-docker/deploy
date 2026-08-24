@@ -1,0 +1,19 @@
+#!/bin/bash
+
+echo ""
+echo "============================ builds ============================"
+echo ""
+
+gcloud builds submit --tag gcr.io/sinuhe-development/dev-api --region us-central1
+
+echo ""
+echo "============================ deploy ============================"
+echo ""
+
+gcloud run deploy dev-api --image gcr.io/sinuhe-development/dev-api --allow-unauthenticated --region us-central1
+
+echo ""
+echo "============================ clean ============================"
+echo ""
+
+gcloud container images delete gcr.io/sinuhe-development/dev-api --quiet

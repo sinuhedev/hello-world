@@ -1,0 +1,23 @@
+# openapi2-run.yaml
+swagger: "2.0"
+info:
+  title: DEV-API
+  description: DEV-API
+  version: 1.0.0
+host: api.nextia.dev
+schemes:
+  - https
+produces:
+  - application/json
+x-google-backend:
+  address: https://dev-api-XXXXXXXXXXX-X.X.run.app
+paths:
+  /:
+    get:
+      summary: Cloud function
+      operationId: hello
+      responses:
+        "200":
+          description: A successful response
+          schema:
+            type: object

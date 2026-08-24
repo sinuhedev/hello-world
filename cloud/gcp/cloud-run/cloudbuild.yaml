@@ -1,0 +1,8 @@
+steps:
+- name: gcr.io/cloud-builders/gcloud
+  entrypoint: bash
+  args:
+    - -c
+    - | 
+      gcloud run deploy dev-api --port 4000 --allow-unauthenticated --region us-central1 --source .
+      echo 'Done!'

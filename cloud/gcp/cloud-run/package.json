@@ -1,0 +1,16 @@
+{
+  "name": "api",
+  "description": "",
+  "version": "0.0.0",
+  "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "private": true,
+  "scripts": {
+    "dev": "node src/index.js",
+    "dev:watch": "node --inspect --watch src index.js",
+    "build": "gcloud builds submit"
+  },
+  "dependencies": {}
+}
