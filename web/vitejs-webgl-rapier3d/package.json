@@ -1,6 +1,5 @@
 {
-	"name": "rapier3d",
-	"description": "webgl-rapier3d",
+	"name": "vitejs-webgl-rapier3d",
 	"version": "0.0.0",
 	"type": "module",
 	"private": true,
