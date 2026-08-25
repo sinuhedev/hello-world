@@ -2,19 +2,25 @@
 
 To install dependencies:
 
-```bash
+```sh
 bun install
 ```
 
 To start a development server:
 
-```bash
+```sh
 bun dev
+```
+
+To test
+```sh
+bun test
+bun run test:name env
 ```
 
 To build 
 
-```bash
+```sh
 bun run build:dev
 bun run build:prod
 ```

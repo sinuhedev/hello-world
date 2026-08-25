@@ -1,8 +1,6 @@
 import { cp, rm } from 'bun:fs/promises'
 import index from './src/index.html'
 
-// console.info(process.env.NODE_ENV)
-
 const ARG = process.argv[2]
 
 /**

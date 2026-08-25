@@ -4,17 +4,16 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "export NODE_ENV=dev && bun --env-file=.env.dev ./bun.config.js dev",
-    "build:dev": "export NODE_ENV=dev && bun --env-file=.env.dev ./bun.config.js build",
-    "build:prod": "export NODE_ENV=prod && bun --env-file=.env.prod ./bun.config.js build",
+    "dev": "bun --env-file=.env.dev ./bun.config.js dev",
+    "build:dev": "bun --env-file=.env.dev ./bun.config.js build",
+    "build:prod": "bun --env-file=.env.prod ./bun.config.js build",
     "test": "bun test",
     "test:name": "bun test --test-name-pattern",
-    "test:coverage": "bun test --coverage",
-    "clean": "rm -rf node_modules out bun.lock"
+    "test:coverage": "bun test --coverage"
   },
   "devDependencies": {},
   "dependencies": {
-    "react": "^19.2.3",
-    "react-dom": "^19.2.3"
+    "react": "19.2.3",
+    "react-dom": "19.2.3"
   }
 }
