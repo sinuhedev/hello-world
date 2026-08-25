@@ -1,0 +1,19 @@
+{
+	"name": "rapier3d",
+	"description": "webgl-rapier3d",
+	"version": "0.0.0",
+	"type": "module",
+	"private": true,
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build"
+	},
+	"devDependencies": {
+		"vite": "8.2.2",
+		"vite-plugin-wasm": "3.6.0"
+	},
+	"dependencies": {
+		"@dimforge/rapier3d": "0.20.0",
+		"three": "0.185.1"
+	}
+}
