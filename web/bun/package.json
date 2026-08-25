@@ -1,0 +1,16 @@
+{
+  "name": "bun",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun --env-file=.env.dev ./bun.config.js dev",
+    "build:dev": "bun --env-file=.env.dev ./bun.config.js build",
+    "build:prod": "bun --env-file=.env.prod ./bun.config.js build",
+    "test": "bun test",
+    "test:name": "bun test --test-name-pattern",
+    "test:coverage": "bun test --coverage"
+  },
+  "devDependencies": {},
+  "dependencies": {}
+}
