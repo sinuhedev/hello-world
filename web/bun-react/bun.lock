@@ -5,15 +5,15 @@
     "": {
       "name": "bun-web",
       "dependencies": {
-        "react": "^19.2.3",
-        "react-dom": "^19.2.3",
+        "react": "19.2.3",
+        "react-dom": "19.2.3",
       },
     },
   },
   "packages": {
-    "react": ["react@19.2.4", "", {}, ""],
+    "react": ["react@19.2.3", "", {}, "sha512-Ku/hhYbVjOQnXDZFv2+RibmLFGwFdeeKHFcOTlrt7xplBnya5OGn/hIRDsqDiSUcfORsDC7MPxwork8jBwsIWA=="],
 
-    "react-dom": ["react-dom@19.2.4", "", { "dependencies": { "scheduler": "^0.27.0" }, "peerDependencies": { "react": "^19.2.4" } }, ""],
+    "react-dom": ["react-dom@19.2.3", "", { "dependencies": { "scheduler": "^0.27.0" }, "peerDependencies": { "react": "^19.2.3" } }, "sha512-yELu4WmLPw5Mr/lmeEpox5rw3RETacE++JgHqQzd2dg+YbJuat3jH4ingc+WPZhxaoFzdv9y33G+F7Nl5O0GBg=="],
 
     "scheduler": ["scheduler@0.27.0", "", {}, ""],
   }
