@@ -11,213 +11,269 @@ import {
   Scene,
   SphereGeometry,
   Vector2,
+  Vector3,
   WebGLRenderer
 } from 'three'
 
-// --- 1. THREE.JS SETUP ---
-const scene = new Scene()
-scene.background = new Color(0x1a1a1a)
+/**
+ * Game
+ */
+class Game {
+  static #GRAVITY = { x: 0, y: -9.81, z: 0 }
+  static #CUBE_SIZE = 1
+  static #HALF_CUBE = 0.5
+  static #BALL_RADIUS = 0.4
+  static #MAX_BALLS = 20
+  static #SHOOT_COOLDOWN_MS = 150
+  static #SHOOT_IMPULSE = 50
+  static #FALL_THRESHOLD_Y = -20
+  static #TOWER = { rows: 6, cols: 5, depth: 2 }
 
-const camera = new PerspectiveCamera(
-  75,
-  window.innerWidth / window.innerHeight,
-  0.1,
-  1000
-)
-const renderer = new WebGLRenderer({ antialias: true })
-renderer.setSize(window.innerWidth, window.innerHeight)
-renderer.shadowMap.enabled = true
-document.body.appendChild(renderer.domElement)
+  constructor() {
+    this.scene = null
+    this.camera = null
+    this.renderer = null
+    this.world = null
+    this.physicsObjects = []
+    this.raycaster = new Raycaster()
+    this.mouse = new Vector2()
+    this._dir = new Vector3()
+    this.lastShotTime = 0
 
-const raycaster = new Raycaster()
-const mouse = new Vector2()
+    this.sharedCubeGeo = new BoxGeometry(
+      Game.#CUBE_SIZE,
+      Game.#CUBE_SIZE,
+      Game.#CUBE_SIZE
+    )
+    this.sharedCubeMat = new MeshStandardMaterial({
+      color: '#b34648',
+      roughness: 0.4
+    })
+    this.sharedBallGeo = new SphereGeometry(Game.#BALL_RADIUS, 32, 32)
+    this.sharedBallMat = new MeshStandardMaterial({
+      color: '#1a4492',
+      roughness: 0.1
+    })
 
-const ambientLight = new AmbientLight(0xffffff, 0.4)
-scene.add(ambientLight)
+    this.onResize = this.onResize.bind(this)
+    this.onKeyDown = this.onKeyDown.bind(this)
+    this.shootBall = this.shootBall.bind(this)
+    this.onContextMenu = this.onContextMenu.bind(this)
+    this.animate = this.animate.bind(this)
+  }
 
-const dirLight = new DirectionalLight(0xffffff, 0.8)
-dirLight.position.set(15, 30, 15)
-dirLight.castShadow = true
-dirLight.shadow.mapSize.width = 2048
-dirLight.shadow.mapSize.height = 2048
-dirLight.shadow.camera.left = -15
-dirLight.shadow.camera.right = 15
-dirLight.shadow.camera.top = 15
-dirLight.shadow.camera.bottom = -15
-scene.add(dirLight)
+  /**
+   * Setup
+   */
+  setupThree() {
+    this.scene = new Scene()
+    this.scene.background = new Color('#335e88')
 
-camera.position.set(0, 6, 18)
-camera.lookAt(0, 3, 0)
+    this.camera = new PerspectiveCamera(
+      75,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000
+    )
+    this.camera.position.set(0, 6, 18)
+    this.camera.lookAt(0, 3, 0)
 
-// --- 2. RAPIER ---
-const gravity = { x: 0.0, y: -9.81, z: 0.0 }
-const world = new World(gravity)
+    this.renderer = new WebGLRenderer({ antialias: true })
+    this.renderer.setSize(window.innerWidth, window.innerHeight)
+    this.renderer.shadowMap.enabled = true
+    document.body.appendChild(this.renderer.domElement)
 
-const physicsObjects = []
+    this.scene.add(new AmbientLight(0xffffff, 0.4))
 
-// --- 3. SUELO ---
-const floorMesh = new Mesh(
-  new BoxGeometry(40, 0.5, 40),
-  new MeshStandardMaterial({ color: '#5ea3b9', roughness: 0.5 })
-)
-floorMesh.receiveShadow = true
-scene.add(floorMesh)
+    const dirLight = new DirectionalLight(0xffffff, 0.8)
+    dirLight.position.set(15, 30, 15)
+    dirLight.castShadow = true
+    dirLight.shadow.mapSize.set(2048, 2048)
+    dirLight.shadow.camera.left = -15
+    dirLight.shadow.camera.right = 15
+    dirLight.shadow.camera.top = 15
+    dirLight.shadow.camera.bottom = -15
+    this.scene.add(dirLight)
+  }
 
-const floorBody = world.createRigidBody(RigidBodyDesc.fixed())
-world.createCollider(ColliderDesc.cuboid(20, 0.25, 20), floorBody)
+  setupPhysics() {
+    this.world = new World(Game.#GRAVITY)
+  }
 
-// --- 4. TORRE DE CUBOS ---
-const CUBE_SIZE = 1.0
-const HALF_SIZE = CUBE_SIZE / 2
-const sharedCubeGeo = new BoxGeometry(CUBE_SIZE, CUBE_SIZE, CUBE_SIZE)
-const sharedCubeMat = new MeshStandardMaterial({
-  color: 0xdd8800,
-  roughness: 0.4
-})
+  createFloor() {
+    const mesh = new Mesh(
+      new BoxGeometry(40, 0.5, 40),
+      new MeshStandardMaterial({ color: '#3a4559', roughness: 0.5 })
+    )
+    mesh.receiveShadow = true
+    this.scene.add(mesh)
 
-function createCubeTower() {
-  const ROWS = 6,
-    COLS = 5,
-    DEPTH = 2
+    const body = this.world.createRigidBody(RigidBodyDesc.fixed())
+    this.world.createCollider(ColliderDesc.cuboid(20, 0.25, 20), body)
+  }
 
-  for (let y = 0; y < ROWS; y++) {
-    for (let x = 0; x < COLS; x++) {
-      for (let z = 0; z < DEPTH; z++) {
-        const posX = (x - (COLS - 1) / 2) * CUBE_SIZE
-        const posY = 0.25 + HALF_SIZE + y * CUBE_SIZE
-        const posZ = (z - (DEPTH - 1) / 2) * CUBE_SIZE
+  createCubeTower() {
+    const { rows, cols, depth } = Game.#TOWER
+    const size = Game.#CUBE_SIZE
+    const half = Game.#HALF_CUBE
 
-        const cubeMesh = new Mesh(sharedCubeGeo, sharedCubeMat)
-        cubeMesh.castShadow = true
-        cubeMesh.receiveShadow = true
-        cubeMesh.position.set(posX, posY, posZ)
-        scene.add(cubeMesh)
+    for (let y = 0; y < rows; y++) {
+      for (let x = 0; x < cols; x++) {
+        for (let z = 0; z < depth; z++) {
+          const posX = (x - (cols - 1) / 2) * size
+          const posY = 0.25 + half + y * size
+          const posZ = (z - (depth - 1) / 2) * size
 
-        const cubeBody = world.createRigidBody(
-          RigidBodyDesc.dynamic().setTranslation(posX, posY, posZ)
-        )
-        world.createCollider(
-          ColliderDesc.cuboid(HALF_SIZE, HALF_SIZE, HALF_SIZE)
-            .setRestitution(0.2)
-            .setFriction(0.6),
-          cubeBody
-        )
-        physicsObjects.push({ mesh: cubeMesh, body: cubeBody, isCube: true })
+          const mesh = new Mesh(this.sharedCubeGeo, this.sharedCubeMat)
+          mesh.castShadow = true
+          mesh.receiveShadow = true
+          mesh.position.set(posX, posY, posZ)
+          this.scene.add(mesh)
+
+          const body = this.world.createRigidBody(
+            RigidBodyDesc.dynamic().setTranslation(posX, posY, posZ)
+          )
+          this.world.createCollider(
+            ColliderDesc.cuboid(half, half, half)
+              .setRestitution(0.2)
+              .setFriction(0.6),
+            body
+          )
+
+          this.physicsObjects.push({ mesh, body, isCube: true })
+        }
       }
     }
   }
-}
 
-createCubeTower()
-
-// --- 5. DISPARAR PELOTAS ---
-const BALL_RADIUS = 0.4
-const MAX_BALLS = 20
-const sharedBallGeo = new SphereGeometry(BALL_RADIUS, 32, 32)
-const sharedBallMat = new MeshStandardMaterial({
-  color: 0x00ffcc,
-  roughness: 0.1
-})
-
-let lastShotTime = 0
-const SHOOT_COOLDOWN_MS = 150
-
-function shootBall(event) {
-  const now = performance.now()
-  if (now - lastShotTime < SHOOT_COOLDOWN_MS) return
-  lastShotTime = now
-
-  const ballObjects = physicsObjects.filter((o) => !o.isCube)
-  if (ballObjects.length >= MAX_BALLS) {
-    const oldest = ballObjects[0]
-    scene.remove(oldest.mesh)
-    world.removeRigidBody(oldest.body)
-    const idx = physicsObjects.indexOf(oldest)
-    if (idx !== -1) physicsObjects.splice(idx, 1)
+  /**
+   * Balls
+   */
+  removeObject(obj) {
+    this.scene.remove(obj.mesh)
+    this.world.removeRigidBody(obj.body)
+    const idx = this.physicsObjects.indexOf(obj)
+    if (idx !== -1) this.physicsObjects.splice(idx, 1)
   }
 
-  mouse.x = (event.clientX / window.innerWidth) * 2 - 1
-  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
-  raycaster.setFromCamera(mouse, camera)
+  shootBall(event) {
+    if (event.button !== 0) return
 
-  const direction = raycaster.ray.direction.clone().normalize()
+    const now = performance.now()
+    if (now - this.lastShotTime < Game.#SHOOT_COOLDOWN_MS) return
+    this.lastShotTime = now
 
-  const ballMesh = new Mesh(sharedBallGeo, sharedBallMat)
-  ballMesh.castShadow = true
-  scene.add(ballMesh)
+    const balls = this.physicsObjects.filter((o) => !o.isCube)
+    if (balls.length >= Game.#MAX_BALLS) this.removeObject(balls[0])
 
-  const spawnPos = camera.position
-    .clone()
-    .add(direction.clone().multiplyScalar(0.5))
+    this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1
+    this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
+    this.raycaster.setFromCamera(this.mouse, this.camera)
 
-  const ballBody = world.createRigidBody(
-    RigidBodyDesc.dynamic().setTranslation(spawnPos.x, spawnPos.y, spawnPos.z)
-  )
-  world.createCollider(
-    ColliderDesc.ball(BALL_RADIUS).setRestitution(0.6).setDensity(3.0),
-    ballBody
-  )
+    this._dir.copy(this.raycaster.ray.direction).normalize()
+    const spawn = this.camera.position.clone().addScaledVector(this._dir, 0.5)
 
-  ballBody.applyImpulse(
-    { x: direction.x * 50, y: direction.y * 50, z: direction.z * 50 },
-    true
-  )
+    const mesh = new Mesh(this.sharedBallGeo, this.sharedBallMat)
+    mesh.castShadow = true
+    this.scene.add(mesh)
 
-  physicsObjects.push({ mesh: ballMesh, body: ballBody, isCube: false })
-}
+    const body = this.world.createRigidBody(
+      RigidBodyDesc.dynamic().setTranslation(spawn.x, spawn.y, spawn.z)
+    )
+    this.world.createCollider(
+      ColliderDesc.ball(Game.#BALL_RADIUS).setRestitution(0.6).setDensity(3),
+      body
+    )
 
-window.addEventListener('click', shootBall)
+    const impulse = Game.#SHOOT_IMPULSE
+    body.applyImpulse(
+      {
+        x: this._dir.x * impulse,
+        y: this._dir.y * impulse,
+        z: this._dir.z * impulse
+      },
+      true
+    )
 
-// --- 6. RESET CON TECLA R ---
-function resetScene() {
-  for (const obj of physicsObjects) {
-    scene.remove(obj.mesh)
-    world.removeRigidBody(obj.body)
+    this.physicsObjects.push({ mesh, body, isCube: false })
   }
-  physicsObjects.length = 0
-  createCubeTower()
-}
 
-window.addEventListener('keydown', (e) => {
-  if (e.key === 'r' || e.key === 'R') resetScene()
-})
-
-// --- 7. BUCLE DE ANIMACIÓN ---
-function animate() {
-  requestAnimationFrame(animate)
-  world.step()
-
-  for (let i = physicsObjects.length - 1; i >= 0; i--) {
-    const obj = physicsObjects[i]
-    const pos = obj.body.translation()
-    const rot = obj.body.rotation()
-
-    obj.mesh.position.set(pos.x, pos.y, pos.z)
-    obj.mesh.quaternion.set(rot.x, rot.y, rot.z, rot.w)
-
-    if (pos.y < -20) {
-      scene.remove(obj.mesh)
-      world.removeRigidBody(obj.body)
-      physicsObjects.splice(i, 1)
+  /**
+   * Reset
+   */
+  resetScene() {
+    for (const obj of this.physicsObjects) {
+      this.scene.remove(obj.mesh)
+      this.world.removeRigidBody(obj.body)
     }
+    this.physicsObjects.length = 0
+    this.createCubeTower()
   }
 
-  renderer.render(scene, camera)
+  /**
+   * Loop
+   */
+  animate() {
+    requestAnimationFrame(this.animate)
+    this.world.step()
+
+    for (let i = this.physicsObjects.length - 1; i >= 0; i--) {
+      const { mesh, body } = this.physicsObjects[i]
+      const pos = body.translation()
+      const rot = body.rotation()
+
+      mesh.position.set(pos.x, pos.y, pos.z)
+      mesh.quaternion.set(rot.x, rot.y, rot.z, rot.w)
+
+      if (pos.y < Game.#FALL_THRESHOLD_Y) {
+        this.scene.remove(mesh)
+        this.world.removeRigidBody(body)
+        this.physicsObjects.splice(i, 1)
+      }
+    }
+
+    this.renderer.render(this.scene, this.camera)
+  }
+
+  /**
+   * Events
+   */
+  onResize() {
+    this.camera.aspect = window.innerWidth / window.innerHeight
+    this.camera.updateProjectionMatrix()
+    this.renderer.setSize(window.innerWidth, window.innerHeight)
+  }
+
+  onKeyDown(e) {
+    if (e.key === 'r' || e.key === 'R') this.resetScene()
+  }
+
+  onContextMenu(e) {
+    e.preventDefault()
+  }
+
+  bindEvents() {
+    window.addEventListener('click', this.shootBall)
+    window.addEventListener('keydown', this.onKeyDown)
+    window.addEventListener('resize', this.onResize)
+    window.addEventListener('contextmenu', this.onContextMenu)
+  }
+
+  /**
+   * Start
+   */
+  start() {
+    this.setupThree()
+    this.setupPhysics()
+    this.createFloor()
+    this.createCubeTower()
+    this.bindEvents()
+    this.animate()
+  }
 }
 
-animate()
-
-// --- 8. RESIZE ---
-const onResize = () => {
-  camera.aspect = window.innerWidth / window.innerHeight
-  camera.updateProjectionMatrix()
-  renderer.setSize(window.innerWidth, window.innerHeight)
-}
-window.addEventListener('resize', onResize)
-
-// --- 9. CLEANUP ---
-export function destroy() {
-  window.removeEventListener('click', shootBall)
-  window.removeEventListener('resize', onResize)
-  renderer.dispose()
-}
+/**
+ * Main
+ */
+const game = new Game()
+game.start()
