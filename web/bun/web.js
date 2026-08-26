@@ -1,4 +1,6 @@
 import { cp, rm } from 'bun:fs/promises'
+import path from 'node:path'
+import { serve } from 'bun'
 import index from './src/index.html'
 
 const ARG = process.argv[2]
@@ -7,7 +9,7 @@ const ARG = process.argv[2]
  * dev
  */
 if (ARG === 'dev') {
-  Bun.serve({
+  const server = serve({
     hostname: '0.0.0.0',
     port: 3000,
 
@@ -20,21 +22,30 @@ if (ARG === 'dev') {
       console: true
     }
   })
+
+  console.log(`🚀 Server running at ${server.url}`)
 }
 
 /**
  * build
  */
 if (ARG === 'build') {
-  await rm('./out', { recursive: true, force: true })
+  const outdir = path.join(process.cwd(), 'out')
+  await rm(outdir, { recursive: true, force: true })
 
-  await Bun.build({
+  const result = await Bun.build({
+    outdir,
     entrypoints: ['./src/index.html'],
-    outdir: './out',
     target: 'browser',
     minify: true,
     env: 'PUBLIC_*'
   })
 
   await cp('./public', './out', { recursive: true })
+
+  for (const output of result.outputs) {
+    console.log(
+      ` ${path.relative(process.cwd(), output.path)}  ${(output.size / 1024).toFixed(1)} KB`
+    )
+  }
 }

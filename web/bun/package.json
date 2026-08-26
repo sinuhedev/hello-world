@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "bun --env-file=.env.dev ./bun.config.js dev",
-    "build:dev": "bun --env-file=.env.dev ./bun.config.js build",
-    "build:prod": "bun --env-file=.env.prod ./bun.config.js build",
+    "dev": "bun --env-file=.env.dev --hot ./web.js dev",
+    "build:dev": "bun --env-file=.env.dev ./web.js build",
+    "build:prod": "bun --env-file=.env.prod ./web.js build",
     "test": "bun test",
     "test:name": "bun test --test-name-pattern",
     "test:coverage": "bun test --coverage"
