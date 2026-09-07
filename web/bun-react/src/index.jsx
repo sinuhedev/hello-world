@@ -1,5 +1,5 @@
 import { createRoot } from 'react-dom/client'
-import { Pages } from './pages'
+import Pages from './pages'
 
 const elem = document.getElementById('root')
 const root = createRoot(elem)

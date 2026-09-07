@@ -3,7 +3,7 @@ import reactLogo from 'assets/img/react.svg'
 import { Button } from 'components'
 import { env } from 'utils'
 
-export function Pages() {
+export default function Pages() {
   return (
     <div className="app">
       <div className="logo-container">
@@ -22,5 +22,3 @@ export function Pages() {
     </div>
   )
 }
-
-export default Pages

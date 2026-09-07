@@ -14,7 +14,8 @@ if (ARG === 'dev') {
     port: 3000,
 
     routes: {
-      '/*': index
+      '/': index,
+      '/*': { dir: './public' }
     },
 
     development: {
