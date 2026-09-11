@@ -12,18 +12,16 @@ const envPlugin = {
     build.onLoad({ filter: /\.html$/ }, async (args) => {
       let html = await Bun.file(args.path).text()
 
+      let gitHash = 'unknown'
+      try {
+        gitHash = execSync('git rev-parse --short HEAD', {
+          encoding: 'utf8'
+        }).trim()
+      } catch {}
+
       html = html.replace(/%(\w+)%/g, (_, key) => {
-        if (key === 'VERSION') {
-          let gitHash = 'unknown'
-
-          try {
-            gitHash = execSync('git rev-parse --short HEAD').toString().trim()
-          } catch (e) {
-            console.error(e)
-          }
-
+        if (key === 'VERSION')
           return `version=${version}, env=${ENV}, date=${new Date().toISOString()}, commit=${gitHash}`
-        }
         return process.env[key] ?? ''
       })
 
@@ -42,12 +40,10 @@ if (ARG === 'serve') {
   const server = Bun.serve({
     hostname: '0.0.0.0',
     port: 3000,
-
     routes: {
       '/': index,
       '/*': { dir: './public' }
     },
-
     development: {
       hmr: true,
       console: true

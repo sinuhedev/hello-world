@@ -1,5 +1,5 @@
 const env = {
-  NODE_ENV: process.env.NODE_ENV,
+  ENV: process.env.BUN_ENV,
   PUBLIC_VAR: process.env.PUBLIC_VAR
 }
 
