@@ -1,5 +1,5 @@
-import { execSync } from 'bun:child_process'
 import { cp, rm } from 'bun:fs/promises'
+import { $ } from 'bun'
 import { version } from './package.json' with { type: 'json' }
 import index from './src/index.html'
 
@@ -10,15 +10,12 @@ const envPlugin = {
   name: 'inject-env-html',
   setup(build) {
     build.onLoad({ filter: /\.html$/ }, async (args) => {
-      let html = await Bun.file(args.path).text()
-
       let gitHash = 'unknown'
       try {
-        gitHash = execSync('git rev-parse --short HEAD', {
-          encoding: 'utf8'
-        }).trim()
+        gitHash = (await $`git rev-parse --short HEAD`.text()).trim()
       } catch {}
 
+      let html = await Bun.file(args.path).text()
       html = html.replace(/%(\w+)%/g, (_, key) => {
         if (key === 'VERSION')
           return `version=${version}, env=${ENV}, date=${new Date().toISOString()}, commit=${gitHash}`
