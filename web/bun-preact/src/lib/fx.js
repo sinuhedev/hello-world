@@ -1,6 +1,6 @@
 import { signal } from '@preact/signals'
 
-const useQueryString = (() => {
+function useQueryString() {
   const getQueryString = () => {
     const [hash, search = ''] = window.location.hash.split('?')
     return {
@@ -9,29 +9,28 @@ const useQueryString = (() => {
     }
   }
 
-  const query = signal(getQueryString())
+  const state = signal(getQueryString())
 
   window.addEventListener('hashchange', () => {
-    query.value = getQueryString()
+    state.value = getQueryString()
   })
 
-  return () => query
-})()
+  return state
+}
 
 function useFx(value) {
   const state = signal(value)
 
-  const incrementar = () => {
-    state.value += 1
-  }
-
-  const decrementar = () => {
-    state.value -= 1
-  }
-
   return {
     state,
-    fx: { incrementar, decrementar }
+    fx: {
+      incrementar: () => {
+        state.value += 1
+      },
+      decrementar: () => {
+        state.value -= 1
+      }
+    }
   }
 }
 
