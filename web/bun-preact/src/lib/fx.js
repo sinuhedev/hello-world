@@ -18,4 +18,21 @@ const useQueryString = (() => {
   return () => query
 })()
 
-export { useQueryString }
+function useFx(value) {
+  const state = signal(value)
+
+  const incrementar = () => {
+    state.value += 1
+  }
+
+  const decrementar = () => {
+    state.value -= 1
+  }
+
+  return {
+    state,
+    fx: { incrementar, decrementar }
+  }
+}
+
+export { useFx, useQueryString }

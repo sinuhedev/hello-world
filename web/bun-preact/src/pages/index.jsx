@@ -1,19 +1,9 @@
-import { signal } from '@preact/signals'
-import { Link, useQueryString } from 'lib'
-
-const contador = signal(0)
+import { Link, useFx, useQueryString } from 'lib'
 
 const qs = useQueryString()
+const { state, fx } = useFx(0)
 
 export default function Pages() {
-  const incrementar = () => {
-    contador.value += 1
-  }
-
-  const decrementar = () => {
-    contador.value -= 1
-  }
-
   return (
     <div
       style={{ fontFamily: 'sans-serif', padding: '20px', textAlign: 'center' }}
@@ -43,13 +33,13 @@ export default function Pages() {
       <br />
 
       <h1>¡Hola Mundo!</h1>
-      <h2>Contador: {contador.value}</h2>
+      <h2>Contador: {state.value}</h2>
 
       <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
-        <button type="button" onClick={decrementar}>
+        <button type="button" onClick={fx.decrementar}>
           Restar -1
         </button>
-        <button type="button" onClick={incrementar}>
+        <button type="button" onClick={fx.incrementar}>
           Sumar +1
         </button>
       </div>

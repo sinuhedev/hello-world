@@ -1,4 +1,4 @@
-import { useQueryString } from './fx.js'
+import { useFx, useQueryString } from './fx.js'
 import { Link } from './ui.js'
 
-export { Link, useQueryString }
+export { Link, useFx, useQueryString }
