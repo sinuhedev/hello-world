@@ -1,0 +1,19 @@
+{
+  "name": "bun",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "BUN_ENV=development bun web.js serve",
+    "build:dev": "BUN_ENV=development bun web.js build",
+    "build:prod": "BUN_ENV=production bun web.js build",
+    "test": "bun test",
+    "test:name": "bun test --test-name-pattern",
+    "test:coverage": "bun test --coverage"
+  },
+  "devDependencies": {},
+  "dependencies": {
+    "@preact/signals": "^1.3.0",
+    "preact": "^10.22.0"
+  }
+}
