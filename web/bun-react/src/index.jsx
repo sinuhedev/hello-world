@@ -2,10 +2,16 @@ import { createRoot } from 'react-dom/client'
 import Pages from './pages'
 
 const elem = document.getElementById('root')
-const root = createRoot(elem)
 
+let root
 if (import.meta.hot) {
-  import.meta.hot.data.root = root
+  root = import.meta.hot.data.root ??= createRoot(elem)
+} else {
+  root = createRoot(elem)
 }
 
 root.render(<Pages />)
+
+if (import.meta.hot) {
+  import.meta.hot.accept()
+}

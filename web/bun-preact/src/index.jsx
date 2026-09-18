@@ -1,6 +1,12 @@
 import { render } from 'preact'
 import Pages from './pages'
 
-if (document) {
-  render(<Pages />, document.getElementById('root'))
-}
+const root = document.getElementById('root')
+const renderPages = () => root && render(<Pages />, root)
+
+renderPages()
+
+if (import.meta.hot)
+  import.meta.hot.accept(() => {
+    renderPages()
+  })
