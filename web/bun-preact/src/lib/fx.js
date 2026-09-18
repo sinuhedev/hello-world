@@ -25,10 +25,12 @@ function useFx(value) {
     state,
     fx: {
       incrementar: () => {
-        state.value += 1
+        const c = state.value.count + 1
+        state.value = { ...state.value, ...{ count: c } }
       },
       decrementar: () => {
-        state.value -= 1
+        const c = state.value.count - 1
+        state.value = { ...state.value, ...{ count: c } }
       }
     }
   }
