@@ -1,0 +1,11 @@
+{
+  "type": "module",
+  "scripts": {
+    "dev": "bun ./src/index.html",
+    "build": "bun build ./src/index.html --outdir=out"
+  },
+  "dependencies": {
+    "@preact/signals": "2.11.2",
+    "preact": "10.29.8"
+  }
+}

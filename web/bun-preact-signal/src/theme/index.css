@@ -1,0 +1,90 @@
+:root {
+  --fondo: #f2f5f7;
+  --texto: #14202b;
+  --tenue: #5b6b79;
+  --acento: #0b5fff;
+  --acento-texto: #ffffff;
+  --borde: #c9d3dc;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fondo: #0f1720;
+    --texto: #e8eef4;
+    --tenue: #93a3b3;
+    --acento: #4c8dff;
+    --acento-texto: #0f1720;
+    --borde: #2b3947;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+.contador {
+  text-align: center;
+  padding: 2rem;
+}
+
+h1 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--tenue);
+}
+
+.valor {
+  display: block;
+  margin: 0.5rem 0;
+  font-size: clamp(6rem, 24vw, 11rem);
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.doble {
+  margin: 0 0 2rem;
+  color: var(--tenue);
+}
+
+.acciones {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+button {
+  font: inherit;
+  font-weight: 600;
+  padding: 0.7rem 1.4rem;
+  border-radius: 8px;
+  border: 1px solid var(--acento);
+  background: var(--acento);
+  color: var(--acento-texto);
+  cursor: pointer;
+}
+
+button.secundario {
+  background: transparent;
+  color: var(--texto);
+  border-color: var(--borde);
+}
+
+button:active {
+  transform: translateY(1px);
+}
+button:focus-visible {
+  outline: 3px solid var(--acento);
+  outline-offset: 3px;
+}
