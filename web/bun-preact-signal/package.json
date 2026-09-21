@@ -2,7 +2,7 @@
   "type": "module",
   "scripts": {
     "dev": "bun ./src/index.html",
-    "build": "bun build ./src/index.html --outdir=out"
+    "build": "rm -fr out && bun build ./src/index.html --outdir=out --minify"
   },
   "dependencies": {
     "@preact/signals": "2.11.2",
