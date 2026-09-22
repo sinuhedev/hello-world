@@ -15,6 +15,7 @@ export default function Pages() {
       <button type="button">yo</button>
 
       <h1>Bun + React</h1>
+      <p>env.ENV : {env.ENV}</p>
       <p>env.PUBLIC_VAR : {env.PUBLIC_VAR}</p>
       <p>
         Edit <code>src/pages/index.jsx</code>

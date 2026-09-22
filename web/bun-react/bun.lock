@@ -3,7 +3,6 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "bun-react",
       "dependencies": {
         "react": "19.2.3",
         "react-dom": "19.2.3",

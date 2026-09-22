@@ -1,0 +1,13 @@
+{
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "bun --hot ./src/index.html",
+    "build": "rm -fr out && bun build ./src/index.html --outdir=out --minify"
+  },
+  "devDependencies": {},
+  "dependencies": {
+    "react": "19.2.3",
+    "react-dom": "19.2.3"
+  }
+}
