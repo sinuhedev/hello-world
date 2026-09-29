@@ -1,12 +1,12 @@
 package app;
 
-import com.sun.net.httpserver.HttpServer;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
-
+import com.sun.net.httpserver.HttpServer;
 import io.github.cdimascio.dotenv.Dotenv;
 import lombok.extern.slf4j.Slf4j;
+import util.Util;
 
 @Slf4j
 public class Main {
@@ -15,6 +15,7 @@ public class Main {
     }
 
     public static void main(String[] args) throws Exception {
+        Util util = new Util();
 
         Dotenv dotenv = Dotenv.configure().filename(".env").ignoreIfMissing().load();
         int port = Optional.ofNullable(dotenv.get("PORT"))
@@ -38,6 +39,7 @@ public class Main {
 
         server.start();
 
+        log.info(util.getName());
         log.info("Servidor iniciado en http://localhost:" + port);
 
     }
