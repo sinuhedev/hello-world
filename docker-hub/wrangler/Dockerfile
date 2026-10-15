@@ -5,4 +5,4 @@ RUN npm install -g wrangler
 
 WORKDIR /app
 
-ENTRYPOINT ["wrangler"]
+CMD ["bash"]
