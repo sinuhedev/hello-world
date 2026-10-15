@@ -97,3 +97,11 @@ v .docker/s3/cdn/._S3rver_cors.xml
 </CORSConfiguration>
 ```
 
+## wrangler
+
+```bash
+docker build -t "sinuhedev/wrangler:latest" wrangler/
+docker push sinuhedev/wrangler:latest
+#
+docker run -it sinuhedev/wrangler
+```
