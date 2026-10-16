@@ -6,11 +6,22 @@
       "type": "lldb",
       "request": "launch",
       "cwd": "${workspaceFolder}",
-      "envFile": "${workspaceFolder}/.env",
       "cargo": {
         "args": [
           "build",
           "--bin=http"
+        ]
+      },
+    },
+    {
+      "name": "Debug Test",
+      "type": "lldb",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "cargo": {
+        "args": [
+          "test",
+          "--no-run"
         ]
       },
     }
