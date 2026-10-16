@@ -104,4 +104,5 @@ docker build -t "sinuhedev/wrangler:latest" wrangler/
 docker push sinuhedev/wrangler:latest
 #
 docker run -it sinuhedev/wrangler
+docker run --rm sinuhedev/wrangler:latest wrangler --version
 ```
