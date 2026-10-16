@@ -1,0 +1,10 @@
+{
+  "type": "module",
+  "scripts": {
+    "dev": "bun run --inspect=ws://localhost:6499 --watch http.js",
+    "dev:https": "bun http.js -s",
+    "dev:path": "bun http.js ~/Downloads",
+    "dev:all": "bun http.js -s ~/Downloads",
+    "build": "bun build http.js --compile --outfile out/http"
+  }
+}

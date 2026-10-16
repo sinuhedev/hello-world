@@ -1,0 +1,9 @@
+{
+  "type": "module",
+  "scripts": {
+    "dev": "node --inspect --watch http",
+    "dev:https": "node http -s",
+    "dev:path": "node http ~/Downloads",
+    "dev:all": "node http -s ~/Downloads"
+  }
+}
