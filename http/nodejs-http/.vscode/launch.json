@@ -3,8 +3,9 @@
   "configurations": [
     {
       "type": "node",
-      "name": "Debug:attach",
-      "request": "attach"
+      "name": "Debug",
+      "request": "launch",
+      "program": "${workspaceFolder}/http"
     }
   ]
 }
