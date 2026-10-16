@@ -1,0 +1,4 @@
+[alias]
+_https = "run -- -s"
+_path = "run -- /tmp"
+_all = "run -- -s /tmp"
