@@ -2,3 +2,60 @@ body {
   background-color: #181a1f;
   color: #b2b2b2;
 }
+
+.nextia-svg {
+  height: 512px;
+  width: 100%;
+
+  #p00 {
+    animation: move 40s ease-in-out infinite;
+  }
+
+  #p01 {
+    animation: move1 60s ease-in-out infinite;
+  }
+}
+
+@keyframes move {
+  0% {
+    transform: translate(300px, 350px);
+  }
+
+  20% {
+    transform: translate(340px, 200px);
+  }
+
+  40% {
+    transform: translate(400px, 100px);
+  }
+
+  80% {
+    transform: translate(300px, 200px);
+  }
+
+  100% {
+    transform: translate(300px, 350px);
+  }
+}
+
+@keyframes move1 {
+  0% {
+    transform: translate(600px, 300px);
+  }
+
+  20% {
+    transform: translate(400px, 400px);
+  }
+
+  40% {
+    transform: translate(550px, 420px);
+  }
+
+  80% {
+    transform: translate(750px, 200px);
+  }
+
+  100% {
+    transform: translate(600px, 300px);
+  }
+}
