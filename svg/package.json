@@ -1,6 +1,7 @@
 {
   "type": "module",
   "scripts": {
-    "dev": "bun index.html"
+    "dev": "bun web.js serve",
+    "build": "bun web.js build"
   }
 }
