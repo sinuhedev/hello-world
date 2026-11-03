@@ -1,0 +1,21 @@
+{
+	"name": "hola-webkit",
+	"module": "index.ts",
+	"type": "module",
+	"private": true,
+	"scripts": {
+		"dev": "bun run index.ts",
+		"build": "bun build --compile --minify --sourcemap index.ts --outfile hola-mundo",
+		"build:release": "bun build --compile --minify index.ts --outfile hola-mundo",
+		"start": "./hola-mundo"
+	},
+	"devDependencies": {
+		"@types/bun": "latest"
+	},
+	"peerDependencies": {
+		"typescript": "^7"
+	},
+	"dependencies": {
+		"webview-bun": "^2.4.0"
+	}
+}
