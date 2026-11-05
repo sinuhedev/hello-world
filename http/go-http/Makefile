@@ -8,13 +8,10 @@ ifeq (run,$(firstword $(MAKECMDGOALS)))
   endif
 endif
 
-.PHONY: build run clean
+.PHONY: all build run clean
 
-dev:
+all:
 	go run cmd/http/main.go
-
-_dev_path:
-	go run cmd/http/main.go ~/Downloads
 
 build:
 	go build -ldflags="-s -w" -o out/http cmd/http/main.go
@@ -24,3 +21,10 @@ run:
 
 clean:
 	rm -rf out/
+
+#
+# test
+#
+
+_path:
+	go run cmd/http/main.go ~/Downloads
