@@ -3,10 +3,8 @@
 HTTP Server
 
 ```sh
-./http 
-./http ~/Downloads
-./http -s
-./http -s ~/Downloads
+./https
+./https ~/Downloads
 ```
 
 ## ssl

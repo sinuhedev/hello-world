@@ -1,0 +1,7 @@
+{
+  "type": "module",
+  "scripts": {
+    "dev": "node --inspect --watch https",
+    "dev:path": "node https ~/Downloads"
+  }
+}

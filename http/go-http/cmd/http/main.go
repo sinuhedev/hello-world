@@ -1,9 +1,6 @@
-// main.go
 package main
 
 import (
-	"crypto/tls"
-	"flag"
 	"fmt"
 	"html"
 	"io"
@@ -21,67 +18,10 @@ const (
 	port     = "3000"
 )
 
-var (
-	keyPEM = []byte(`-----BEGIN PRIVATE KEY-----
-MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDpVcNdBZJczBpj
-XQb/spDE5TlwHjrTxZxTba9461UK1ZiOk2Sro2nfJz8703XT0uGUoAAUeyOfLb9C
-OUTiWpMEl4xeH0+V8aujEDTT44xR2JaQ+gc12eTEY8tQ2ZKw2U9VUnfxxxOuHCVN
-Og7tBpB2x7aauvSLwQwJgr0Z8Tqt5SarNF6mH9TfHV0LdbxW3TF32nWTWqCJCi8T
-tfl40h5ZJfA62s4ei2s6uuh5MXiBJ4ZN/BenGPYkSyC9nXhNox85qGJWXWUTffIt
-8AdC9+cZfPokkb7ThilyOivcup5jTvrYUkTGMbS4h2alB8rOfnGNhy5E/ar/JDJp
-M7CHo16nAgMBAAECggEAQiDVuM/C7rzDf8SWHrJvN/YU5LMUjf8TsktELztWwzbM
-wR+BqOkrsJwxXhWsb4d0+gesbiGF829mJHERlisAPo1qsSQjjIXM1G5b4m87TdjZ
-tyW9FGR34ra7oOLAoZE83Bv+tU1rxOziH3RkVYWGPLuWA10XwGHKNQnR6P/GVxCv
-bqOhd70m71Rm14Q6BZrSbSGBgpj8MbwF02HsMnMeiQo+lrTeKb9G8Bhxrmtz7W1S
-7OqS6p6Jh8bgk5bofLbkgAFodHxLoQKh+6Icc/J1isk7l6K1DMZTKZkMUmKYe7U1
-3xYdQOQF7YXtpAYRyCXf1x302ge9lHtQLkBJuJa9vQKBgQD2brwcGhOWDC7Ez6hk
-s0Xu4qjFmuYptvPLML629RFXZBJzTUUlBhmGblq53tnYEg8JNWAQjMwDXyCwapX2
-Z8rn+sFpOJpeHmluB0uNuKAcQxBmuxj8tsVFePl5RMzkZGpXYDUtU4M0M1OcjdGR
-K9Y2CqgqG09XGP0Rn2112Ys+OwKBgQDyZNpy+ce4bqtUtFycKfbYZgsJphEQPnQ0
-MQlj7vlgqf0r4l2kGPgvxe1GjYk031r5Lo8dhKwQMxnTRgSwDkBYEItLppqJrcGJ
-CIu7oufVIVMQpZikkYvOTQJ0UMgQ696rXODjqjW5MhlmQrAJKESmXx0fjMs3Lc4+
-47iuS1F+hQKBgQCX3vS1COkLLuTfy+5GaSlvKGbEqUqxaJvknFzcmjmetwCb6IH1
-aEXw0C+/nvR4MeDsVuWmLW9JoKWfs4BKA/tLbgEmXIjd+jYVZg+M/rxFzprcBPBI
-RkdbIkv1DY6MLspOoO8EyRPx5rPfppMBuZdhZL3wfTYvQiosYyltWK10owKBgQDc
-rQbYICE8/rxKvH2HywipUJWB7kego0tF7NLgwUMWRwxvtIGOERF65NY1Ikwk76ey
-LjorJItFoFBFsXw5EHBx/HXkpMQSzjbhW/9jD1fDCLjH8gr64GsIocG3RYgvJ54s
-Ir23Z1HLzhmjqNj9LUT6tqMcAyFLlg8r4ERVocqKxQKBgQCTaV2wgfkrVhVOZMnf
-j9Kfsbm2+Z0/T2d78tAIk2NbyyrkU/oQii+5atWI6fIr7d7UKaOJwvS7HWazGg0N
-LeTqhJ7c8yQribNaUeB7TQEpESR6YP+yUmZ8Fk8faQhAKLUK04tlC2+oNL8b6BmZ
-HFJ8KxWK7i3cdRJOumu6/eCWXQ==
------END PRIVATE KEY-----`)
-
-	certPEM = []byte(`-----BEGIN CERTIFICATE-----
-MIIDqTCCApGgAwIBAgIUS5/VcVf0jzwYy4fqsiAZoRIYLUEwDQYJKoZIhvcNAQEL
-BQAwYzELMAkGA1UEBhMCTVgxCzAJBgNVBAgMAk1YMQswCQYDVQQHDAJNWDESMBAG
-A1UECgwJbG9jYWxob3N0MRIwEAYDVQQLDAlsb2NhbGhvc3QxEjAQBgNVBAMMCWxv
-Y2FsaG9zdDAgFw0yNjA3MjAxMDU5MjNaGA8yMDUzMTIwNDEwNTkyM1owYzELMAkG
-A1UEBhMCTVgxCzAJBgNVBAgMAk1YMQswCQYDVQQHDAJNWDESMBAGA1UECgwJbG9j
-YWxob3N0MRIwEAYDVQQLDAlsb2NhbGhvc3QxEjAQBgNVBAMMCWxvY2FsaG9zdDCC
-ASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOlVw10FklzMGmNdBv+ykMTl
-OXAeOtPFnFNtr3jrVQrVmI6TZKujad8nPzvTddPS4ZSgABR7I58tv0I5ROJakwSX
-jF4fT5Xxq6MQNNPjjFHYlpD6BzXZ5MRjy1DZkrDZT1VSd/HHE64cJU06Du0GkHbH
-tpq69IvBDAmCvRnxOq3lJqs0XqYf1N8dXQt1vFbdMXfadZNaoIkKLxO1+XjSHlkl
-8Drazh6Lazq66HkxeIEnhk38F6cY9iRLIL2deE2jHzmoYlZdZRN98i3wB0L35xl8
-+iSRvtOGKXI6K9y6nmNO+thSRMYxtLiHZqUHys5+cY2HLkT9qv8kMmkzsIejXqcC
-AwEAAaNTMFEwHQYDVR0OBBYEFCRcd0xtqRqV19o2zjqQp/U+2T8fMB8GA1UdIwQY
-MBaAFCRcd0xtqRqV19o2zjqQp/U+2T8fMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZI
-hvcNAQELBQADggEBAD84a8d4yjDLFiTrfgCCite2z9iZQH1xIB1O/bma8YBnyFpT
-KtEfiSWCRjAkfJyj73be2ajvw0HAS6kMuM6+dEpz18BWHS9ZL/gmLtCcvpncDCuY
-iGSbYTtuX/G8HVPTCzYBECi9G61BPMA2UKg/raMER2ZCifrvsme+S120w9dJPBa8
-fPXxaBSMDEvZXEOSibENj0Y/ENYRTnynf3gjipTuZ2k7zTl26aIDqJMbQTgIUM8i
-QpZhtPuk9P7QxJJB8eXA2VjTTybzpw4V2K9BWfAMmwH7xt79F+EKhZYaPbrBjw4e
-qvonZzSh+/wGWr3MCUaaPkeWS29u6f6HW96GK/I=
------END CERTIFICATE-----`)
-)
-
 func main() {
-	useHTTPS := flag.Bool("s", false, "usar HTTPS")
-	flag.Parse()
-
 	root := "."
-	if flag.NArg() > 0 {
-		root = flag.Arg(0)
+	if len(os.Args) > 1 {
+		root = os.Args[1]
 	}
 	absRoot, err := filepath.Abs(root)
 	if err != nil {
@@ -93,30 +33,10 @@ func main() {
 	})
 
 	addr := net.JoinHostPort(hostname, port)
-	protocol := "http"
-
-	if *useHTTPS {
-		protocol = "https"
-		cert, err := tls.X509KeyPair(certPEM, keyPEM)
-		if err != nil {
-			log.Fatal(err)
-		}
-		server := &http.Server{
-			Addr:    addr,
-			Handler: handler,
-			TLSConfig: &tls.Config{
-				Certificates: []tls.Certificate{cert},
-			},
-		}
-		log.Printf("Server running at:")
-		log.Printf("  → Local:   %s://localhost:%s", protocol, port)
-		log.Printf("  → Network: %s://%s:%s", protocol, getLocalIP(), port)
-		log.Fatal(server.ListenAndServeTLS("", ""))
-	}
 
 	log.Printf("Server running at:")
-	log.Printf("  → Local:   %s://localhost:%s", protocol, port)
-	log.Printf("  → Network: %s://%s:%s", protocol, getLocalIP(), port)
+	log.Printf("  → Local:   http://localhost:%s", port)
+	log.Printf("  → Network: http://%s:%s", getLocalIP(), port)
 	log.Fatal(http.ListenAndServe(addr, handler))
 }
 
