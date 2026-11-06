@@ -129,6 +129,16 @@ static void sb_url_encode(SB* s, const char* c) {
 
 /* ---------- utilidades ---------- */
 
+// Como snprintf, pero devuelve false si la salida no cupo (se truncaría).
+[[gnu::format(printf, 3, 4)]]
+static bool path_fmt(char* out, size_t cap, const char* fmt, ...) {
+  va_list ap;
+  va_start(ap, fmt);
+  int n = vsnprintf(out, cap, fmt, ap);
+  va_end(ap);
+  return n >= 0 && (size_t)n < cap;
+}
+
 static const char* get_mime_type(const char* path) {
   const char* dot = strrchr(path, '.');
   if (!dot) return "application/octet-stream";
@@ -230,9 +240,9 @@ static int cmp_names(const struct dirent** a, const struct dirent** b) {
 
 static void serve_directory(int fd, const char* path, const char* uri) {
   char index_path[PATH_MAX];
-  snprintf(index_path, sizeof index_path, "%s/index.html", path);
   struct stat st;
-  if (stat(index_path, &st) == 0 && S_ISREG(st.st_mode))
+  if (path_fmt(index_path, sizeof index_path, "%s/index.html", path) &&
+      stat(index_path, &st) == 0 && S_ISREG(st.st_mode))
     return serve_file(fd, index_path, st.st_size);
 
   // Filas de la lista
@@ -257,14 +267,14 @@ static void serve_directory(int fd, const char* path, const char* uri) {
   for (int i = 0; i < count; i++) {
     const char* name = names[i]->d_name;
     if (strcmp(name, ".") && strcmp(name, "..")) {
-      char full[PATH_MAX];
-      snprintf(full, sizeof full, "%s/%s", path, name);
+      char full[PATH_MAX], href[PATH_MAX], size[32] = "—";
       struct stat fst;
-      if (lstat(full, &fst) == 0) {
+      // Si alguna ruta no cabe, la entrada se omite en vez de listarla rota.
+      if (path_fmt(full, sizeof full, "%s/%s", path, name) &&
+          lstat(full, &fst) == 0 &&
+          path_fmt(href, sizeof href, "%s%s%s", uri,
+                   (uri[strlen(uri) - 1] == '/') ? "" : "/", name)) {
         bool is_dir = S_ISDIR(fst.st_mode);
-        char href[PATH_MAX], size[32] = "—";
-        snprintf(href, sizeof href, "%s%s%s", uri,
-                 (uri[strlen(uri) - 1] == '/') ? "" : "/", name);
         if (!is_dir) format_size(size, sizeof size, fst.st_size);
 
         sb_str(&list, "<li><a href=\"");
@@ -341,13 +351,14 @@ static void handle_upload(int fd, const char* dir, const char* uri, const char* 
           size_t dlen2 = (size_t)(next - data);
           if (dlen2 >= 2) dlen2 -= 2;  // quita \r\n previo al boundary
           char dest[PATH_MAX];
-          snprintf(dest, sizeof dest, "%s/%s", dir, base);
-          FILE* out = fopen(dest, "wb");
-          if (out) {
-            fwrite(data, 1, dlen2, out);
-            fclose(out);
-            printf("Uploaded %s -> %s\n", base, dest);
-            saved++;
+          if (path_fmt(dest, sizeof dest, "%s/%s", dir, base)) {
+            FILE* out = fopen(dest, "wb");
+            if (out) {
+              fwrite(data, 1, dlen2, out);
+              fclose(out);
+              printf("Uploaded %s -> %s\n", base, dest);
+              saved++;
+            }
           }
         }
         free(filename);
@@ -398,7 +409,8 @@ static void handle_client(int fd) {
     return send_text(fd, 404, "Not Found", "404 : Not Found");
 
   char path[PATH_MAX];
-  snprintf(path, sizeof path, "%s%s", root_dir, target);
+  if (!path_fmt(path, sizeof path, "%s%s", root_dir, target))
+    return send_text(fd, 414, "URI Too Long", "414: URI Too Long");
 
   struct stat st;
   if (stat(path, &st) != 0) return send_text(fd, 404, "Not Found", "404 : Not Found");
@@ -481,8 +493,8 @@ int main(int argc, char** argv) {
 
   char ip[64];
   get_local_ip(ip, sizeof ip);
-  printf("Server running at:\n  → Local:   http://localhost:%d\n  → Network: http://%s:%d\n",
-         PORT, ip, PORT);
+  printf("Server running at:\n  → Local:   http://localhost:%d\n  → Network: http://%s:%d\nServing: %s\n",
+         PORT, ip, PORT, root_dir);
 
   for (;;) {
     int c = accept(srv, nullptr, nullptr);
