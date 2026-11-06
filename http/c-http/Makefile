@@ -21,3 +21,7 @@ run:
 clean:
 	rm -fr out
 
+# test
+
+_version:
+	./out/$(APP_NAME) --version

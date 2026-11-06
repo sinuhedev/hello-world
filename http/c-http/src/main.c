@@ -1,4 +1,5 @@
 #define _GNU_SOURCE
+
 #include <arpa/inet.h>
 #include <dirent.h>
 #include <errno.h>
@@ -16,6 +17,8 @@
 #include <sys/socket.h>
 #include <sys/stat.h>
 #include <unistd.h>
+
+#include "version.h"
 
 #define PORT 3000
 #define HEADER_MAX 16384
@@ -51,6 +54,15 @@ static const struct {
     {"pdf", "application/pdf"},
     {"wasm", "application/wasm"},
 };
+
+static void get_version(int argc, char** argv) {
+  for (int i = 1; i < argc; i++) {
+    if (strcmp(argv[i], "--version") == 0) {
+      printf("http v%s\n", VERSION);
+      exit(0);
+    }
+  }
+}
 
 static char root_dir[PATH_MAX];
 
@@ -443,6 +455,8 @@ static void handle_client(int fd) {
 /* ---------- main ---------- */
 
 int main(int argc, char** argv) {
+  get_version(argc, argv);
+
   if (!realpath(argc > 1 ? argv[1] : ".", root_dir)) {
     perror("realpath");
     return 1;
