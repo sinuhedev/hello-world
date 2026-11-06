@@ -1,2 +1,3 @@
 [alias]
 _path = "run -- "
+_version = "run -- --version"

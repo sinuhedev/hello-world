@@ -7,6 +7,7 @@ use std::net::{SocketAddr, TcpListener};
 use std::path::{Path, PathBuf};
 use std::thread;
 
+const VERSION: &str = env!("CARGO_PKG_VERSION");
 const HTML: &str = include_str!("./assets/index.html");
 const HOSTNAME: &str = "0.0.0.0";
 const PORT: u16 = 3000;
@@ -74,6 +75,15 @@ fn format_size(bytes: u64) -> String {
         format!("{:.1} MB", bytes as f64 / (1024.0 * 1024.0))
     } else {
         format!("{:.1} GB", bytes as f64 / (1024.0 * 1024.0 * 1024.0))
+    }
+}
+
+fn get_version() {
+    for arg in env::args().skip(1) {
+        if arg == "--version" {
+            println!("http v{}", VERSION);
+            std::process::exit(0);
+        }
     }
 }
 
@@ -410,6 +420,8 @@ fn handle_connection<S: Read + Write>(mut stream: S, root: PathBuf) {
 }
 
 fn main() {
+    get_version();
+
     let current_path = get_args();
 
     let addr: SocketAddr = format!("{}:{}", HOSTNAME, PORT).parse().unwrap();
