@@ -22,7 +22,7 @@
 
 // La plantilla HTML se incrusta en el binario en tiempo de compilación.
 static const char TEMPLATE[] = {
-#embed "template.html"
+#embed "assets/index.html"
     , 0};
 
 static const struct {

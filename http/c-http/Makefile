@@ -13,7 +13,7 @@ APP_NAME := http
 
 build:
 	mkdir -p out
-	gcc -std=c23 -O2 -Wall -Wextra -o out/$(APP_NAME) main.c
+	gcc -std=c23 -O2 -Wall -Wextra -o out/$(APP_NAME) src/main.c
 
 run:
 	./out/$(APP_NAME) $(ARGS)
