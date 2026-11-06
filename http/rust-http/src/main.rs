@@ -2,12 +2,21 @@ use std::collections::HashMap;
 use std::env;
 use std::fs::{self, File};
 use std::io::{self, BufRead, BufReader, Read, Write};
+use std::net::{IpAddr, Ipv4Addr, UdpSocket};
 use std::net::{SocketAddr, TcpListener};
 use std::path::{Path, PathBuf};
 use std::thread;
 
+const HTML: &str = include_str!("./assets/index.html");
 const HOSTNAME: &str = "0.0.0.0";
 const PORT: u16 = 3000;
+
+struct HttpRequest {
+    method: String,
+    path: String,
+    headers: HashMap<String, String>,
+    body: Vec<u8>,
+}
 
 fn mime_types() -> HashMap<&'static str, &'static str> {
     let mut m = HashMap::new();
@@ -47,6 +56,15 @@ fn get_mime_type(file_path: &Path) -> &'static str {
         .unwrap_or("application/octet-stream")
 }
 
+fn get_local_ip() -> IpAddr {
+    (|| -> std::io::Result<IpAddr> {
+        let socket = UdpSocket::bind("0.0.0.0:0")?;
+        socket.connect("8.8.8.8:80")?;
+        Ok(socket.local_addr()?.ip())
+    })()
+    .unwrap_or(IpAddr::V4(Ipv4Addr::UNSPECIFIED))
+}
+
 fn format_size(bytes: u64) -> String {
     if bytes < 1024 {
         format!("{} B", bytes)
@@ -67,14 +85,6 @@ fn get_args() -> PathBuf {
         }
     }
     fs::canonicalize(&path).unwrap_or(path)
-}
-
-// ---------- Lectura de request HTTP ----------
-struct HttpRequest {
-    method: String,
-    path: String,
-    headers: HashMap<String, String>,
-    body: Vec<u8>,
 }
 
 fn read_request<S: Read>(stream: &mut S) -> io::Result<Option<HttpRequest>> {
@@ -325,171 +335,10 @@ fn serve_directory<S: Write>(stream: &mut S, path_name: &Path, uri: &str) -> io:
         String::new()
     };
 
-    let html = format!(
-        r#"<!DOCTYPE html>
-<html lang="es">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
-    <title>Index of {uri}</title>
-    <style>
-      *, *::before, *::after {{ box-sizing: border-box; }}
-      body {{
-        font-family: monospace;
-        padding: 1.5rem 1rem;
-        margin: 0;
-        background: #242932;
-        color: gray;
-        font-size: clamp(0.85rem, 2.5vw, 1rem);
-      }}
-      h1 {{
-        border-bottom: 1px solid #444;
-        padding-bottom: .5rem;
-        font-size: clamp(1rem, 4vw, 1.4rem);
-        word-break: break-all;
-      }}
-      ul  {{ list-style: none; padding: 0; margin: 0; }}
-      li  {{
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 1rem;
-        padding: .5rem 0;
-        border-bottom: 1px solid #2e343f;
-      }}
-      a {{ text-decoration: none; color: #98c2e1; word-break: break-all; }}
-      a:hover {{ color: #808a92; }}
-      .size {{ color: #556170; white-space: nowrap; font-size: 0.85em; }}
-      .upload-form {{
-        display: flex;
-        flex-wrap: wrap;
-        gap: 25px;
-        align-items: center;
-        margin: 1rem 0 1.5rem;
-        padding: 1rem;
-        background: #2a303b;
-        border: 1px dashed #444;
-        border-radius: 6px;
-      }}
-      .upload-form input[type="file"] {{
-        color: gray;
-        flex: 1 1 200px;
-      }}
-      .upload-form input[type="file"]::file-selector-button,
-      .upload-form input[type="file"]::-webkit-file-upload-button {{
-        background: #3a4150;
-        color: #98c2e1;
-        border: 1px solid #4a5262;
-        border-radius: 4px;
-        padding: 15px;
-        margin-right: .75rem;
-        font-family: inherit;
-        cursor: pointer;
-        transition: background .15s ease;
-      }}
-      .upload-form input[type="file"]::file-selector-button:hover,
-      .upload-form input[type="file"]::-webkit-file-upload-button:hover {{
-        background: #444c5c;
-      }}
-      .upload-form button {{
-        background: #3a4150;
-        color: #98c2e1;
-        border: 1px solid #4a5262;
-        border-radius: 4px;
-        padding: 15px;
-        cursor: pointer;
-        font-family: inherit;
-        display: flex;
-        align-items: center;
-        gap: .5rem;
-      }}
-      .upload-form button:hover {{ background: #444c5c; }}
-      .upload-form button:disabled {{
-        opacity: .7;
-        cursor: not-allowed;
-      }}
-      .spinner {{
-        display: none;
-        width: 14px;
-        height: 14px;
-        border: 2px solid rgba(152, 194, 225, 0.3);
-        border-top-color: #98c2e1;
-        border-radius: 50%;
-        animation: spin .7s linear infinite;
-      }}
-      .upload-form button.loading .spinner {{ display: inline-block; }}
-      .upload-form button.loading .btn-label {{
-        visibility: hidden;
-        position: relative;
-      }}
-      .upload-form button.loading .btn-label::after {{
-        content: "Upload...";
-        visibility: visible;
-        position: absolute;
-        left: 0;
-        white-space: nowrap;
-      }}
-      @keyframes spin {{
-        to {{ transform: rotate(360deg); }}
-      }}
-      .upload-overlay {{
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(36, 41, 50, 0.85);
-        z-index: 999;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        gap: 1rem;
-        color: #98c2e1;
-        font-family: monospace;
-      }}
-      .upload-overlay.active {{ display: flex; }}
-      .upload-overlay .big-spinner {{
-        width: 40px;
-        height: 40px;
-        border: 4px solid rgba(152, 194, 225, 0.2);
-        border-top-color: #98c2e1;
-        border-radius: 50%;
-        animation: spin .8s linear infinite;
-      }}
-      @media (min-width: 600px) {{
-        body {{ padding: 2rem; }}
-        li   {{ padding: .25rem 0; }}
-      }}
-    </style>
-  </head>
-  <body>
-    <h1>Index of {uri}</h1>
-    <form class="upload-form" id="upload-form" action="{uri}" method="POST" enctype="multipart/form-data">
-      <input type="file" name="file" multiple required>
-      <button type="submit" id="upload-btn">
-        <span class="spinner"></span>
-        <span class="btn-label">Upload</span>
-      </button>
-    </form>
-    <div class="upload-overlay" id="upload-overlay">
-      <div class="big-spinner"></div>
-      <span>Upload files...</span>
-    </div>
-    <ul>
-      {parent_link}
-      {links}
-    </ul>
-    <script>
-      document.getElementById('upload-form').addEventListener('submit', function () {{
-        document.getElementById('upload-btn').classList.add('loading')
-        document.getElementById('upload-btn').disabled = true
-        document.getElementById('upload-overlay').classList.add('active')
-      }})
-    </script>
-  </body>
-</html>"#,
-        uri = uri,
-        parent_link = parent_link,
-        links = links
-    );
+    let html = HTML
+        .replace("{{URI}}", uri)
+        .replace("{{PARENT_LINK}}", &parent_link)
+        .replace("{{LINKS}}", &links);
 
     send_response(stream, 200, "text/html; charset=utf-8", html.as_bytes())
 }
@@ -568,7 +417,7 @@ fn main() {
 
     println!("Server running at:");
     println!("  → Local:   http://localhost:{}", PORT);
-    println!("  → Network: http://{}:{}", HOSTNAME, PORT);
+    println!("  → Network: http://{}:{}", get_local_ip(), PORT);
     println!("Serving: {}", current_path.display());
 
     for stream in listener.incoming() {
