@@ -7,6 +7,7 @@ HTTP Server
 ```sh
 cargo run
 cargo _path
+cargo _path ~/Downloads
 ```
 
 

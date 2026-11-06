@@ -1,2 +1,2 @@
 [alias]
-_path = "run -- /tmp"
+_path = "run -- "
