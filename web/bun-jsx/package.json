@@ -1,0 +1,8 @@
+{
+	"name": "hello-jsx",
+	"type": "module",
+	"scripts": {
+		"dev": "bun run server.js",
+		"build": "bun build ./index.html --outdir=out"
+	}
+}
